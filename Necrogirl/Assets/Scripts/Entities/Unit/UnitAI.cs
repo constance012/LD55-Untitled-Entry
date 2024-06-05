@@ -15,6 +15,8 @@ public abstract class UnitAI : EntityAI
 	{
 		base.Start();
 		_nearbyEntities.Add(this.rb2D);
+
+		animator.Play("Unit Summoned");
 	}
 
     protected override bool TrySelectTarget()

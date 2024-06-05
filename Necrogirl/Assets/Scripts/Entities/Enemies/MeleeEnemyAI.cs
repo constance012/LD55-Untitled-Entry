@@ -2,9 +2,17 @@
 
 public class MeleeEnemyAI : EntityAI
 {
+	[Header("Wandering Settings"), Space]
+	[SerializeField, Range(.2f, .8f)] private float wanderSpeedMultiplier;
+	[SerializeField, Tooltip("The amount of time before picking a new wandering destination")]
+	private Vector2 wanderDelayRange;
+
 	// Private fields.
 	private bool _spottedPlayer;
 	private float _spotTimer;
+	private EnemySpawner _spawnPoint;
+	private Vector2 _wanderDestination;
+	private float _wanderDelay = 0f;
 
 	protected override void Start()
 	{
@@ -21,7 +29,16 @@ public class MeleeEnemyAI : EntityAI
 
 		if (SpotTarget())
 			ChaseTarget();
+		else
+			WanderAround();
     }
+
+	public void SetSpawnArea(EnemySpawner spawnPoint)
+	{
+		_spawnPoint = spawnPoint;
+		_wanderDestination = rb2D.position;
+		_wanderDelay = Random.Range(wanderDelayRange.x, wanderDelayRange.y);
+	}
 
 	public void Alert()
 	{
@@ -69,6 +86,31 @@ public class MeleeEnemyAI : EntityAI
 
 		return false;
     }
+
+	private void WanderAround()
+	{
+		if (_wanderDelay <= 0f && rb2D.velocity == Vector2.zero)
+		{
+			_wanderDestination = _spawnPoint.position + Random.insideUnitCircle * _spawnPoint.range;
+			_wanderDelay = Random.Range(wanderDelayRange.x, wanderDelayRange.y);
+		}
+		else
+		{
+			Vector2 direction = _wanderDestination - rb2D.position;
+			if (direction.sqrMagnitude > .2f * .2f)
+			{
+				Vector2 velocity = CalculateVelocity(direction.normalized, wanderSpeedMultiplier);
+
+				CheckFlip();
+				rb2D.velocity = velocity;
+			}
+			else
+			{
+				rb2D.velocity = Vector2.zero;
+				_wanderDelay -= Time.deltaTime;
+			}
+		}
+	}
 
     private bool SpotTarget()
     {

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A non-threaded path requester.
+/// </summary>
 public class PathRequester : Singleton<PathRequester>
 {
 	[Header("References"), Space]
@@ -36,10 +39,7 @@ public class PathRequester : Singleton<PathRequester>
 	
 	private void OnPathFinishedProcessing(PathResult result)
 	{
-		lock(_results)
-		{
-			_results.Enqueue(result);
-		}
+		_results.Enqueue(result);
 	}
 }
 

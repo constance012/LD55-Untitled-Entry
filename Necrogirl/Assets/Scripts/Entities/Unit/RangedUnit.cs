@@ -32,7 +32,7 @@ public class RangedUnit : UnitStats
 			
 			projectile.name = projectilePrefab.name;
 			projectile.transform.eulerAngles = Vector3.forward * angle;
-			projectile.GetComponent<SimpleProjectile>().Initialize(this.stats, currentTarget);
+			projectile.GetComponent<SimpleProjectile>().Initialize(this, this.stats, currentTarget);
 
 			_attackInterval = BaseAttackInterval;
 

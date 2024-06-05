@@ -124,6 +124,8 @@ MonoBehaviour:
   spotLayer:
     serializedVersion: 2
     m_Bits: 520
+  wanderSpeedMultiplier: 0.6
+  wanderDelayRange: {x: 1, y: 3}
   retreatMinDistance: 4
 --- !u!114 &3006294094276067947
 MonoBehaviour:
@@ -150,6 +152,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 520
   healthBar: {fileID: 8023558463211511310}
+  animator: {fileID: 4254393940804923158}
   projectilePrefab: {fileID: 5079351696014869354, guid: ab653688f00ea8a469f037e988691b50, type: 3}
 --- !u!114 &8023558463211511310 stripped
 MonoBehaviour:

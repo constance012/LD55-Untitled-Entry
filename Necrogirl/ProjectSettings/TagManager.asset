@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WorldCanvas
   - WeakpointTrigger
+  - Magician
   layers:
   - Default
   - TransparentFX

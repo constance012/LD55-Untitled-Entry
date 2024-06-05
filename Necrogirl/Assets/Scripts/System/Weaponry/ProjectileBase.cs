@@ -21,6 +21,7 @@ public abstract class ProjectileBase : MonoBehaviour
 
 	// Protected fields.
 	protected float _aliveTime;
+	protected EntityStats _wearer;
 	protected Stats _wearerStats;
 
 	protected virtual void Update()
@@ -52,9 +53,11 @@ public abstract class ProjectileBase : MonoBehaviour
 		this.isHoming = this.targetToTrack != null;
 	}
 	
-	public virtual void Initialize(Stats wearerStats, Transform trackTarget)
+	public virtual void Initialize(EntityStats wearer, Stats wearerStats, Transform trackTarget)
 	{
+		_wearer = wearer;
 		_wearerStats = wearerStats;
+		
 		targetToTrack = trackTarget;
 
 		this.flySpeed = _wearerStats.GetStaticStat(Stat.ProjectileSpeed);

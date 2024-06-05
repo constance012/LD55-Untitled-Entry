@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2428981501112486871, guid: 5ca1749e49554ee41817349ecf77e00d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428981501112486871, guid: 5ca1749e49554ee41817349ecf77e00d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4038556098368311010, guid: 5ca1749e49554ee41817349ecf77e00d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -128,6 +136,8 @@ MonoBehaviour:
   spotLayer:
     serializedVersion: 2
     m_Bits: 520
+  wanderSpeedMultiplier: 0.6
+  wanderDelayRange: {x: 1, y: 3}
   retreatMinDistance: 3.5
 --- !u!114 &4193198861709201875
 MonoBehaviour:
@@ -154,6 +164,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 520
   healthBar: {fileID: 8023558463211511310}
+  animator: {fileID: 4254393940804923158}
   projectilePrefab: {fileID: 5079351696014869354, guid: c2ac1dd6e3aba1a4e816e9e3cd143961, type: 3}
 --- !u!114 &8023558463211511310 stripped
 MonoBehaviour:

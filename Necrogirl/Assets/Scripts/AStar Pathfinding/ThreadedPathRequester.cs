@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// Path requester using .NET threading, this doesn't support WebGL.
+/// </summary>
 public class ThreadedPathRequester : Singleton<ThreadedPathRequester>
 {
 	[Header("References"), Space]

@@ -16,9 +16,10 @@ public class SummonManager : Singleton<SummonManager>
 	[SerializeField] private TextMeshProUGUI unitCountText;
 
 	[Header("Summon Settings"), Space]
+	[SerializeField] private LayerMask terrainLayers;
 	[SerializeField, Min(0f)] private float cooldown;
 	[SerializeField] private int maxUnit;
-	[SerializeField] private Vector2 summonRange;
+	[SerializeField] private float summonRadius;
 
 	// Private fields.
 	private float _cooldown = 0f;
@@ -76,12 +77,10 @@ public class SummonManager : Singleton<SummonManager>
 
 		if (player.CurrentMana >= manaCost)
 		{
-			float x = Random.Range(PlayerMovement.Position.x - summonRange.x, PlayerMovement.Position.x + summonRange.x);
-			float y = Random.Range(PlayerMovement.Position.y - summonRange.y, PlayerMovement.Position.y + summonRange.y);
-
 			int prefabIndex = index == 0 ? Random.Range(0, 2) : index + 1;
+			Vector2 pos = ChooseSummonPosition();
 
-			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(x, y), Quaternion.identity);
+			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(pos.x, pos.y), Quaternion.identity);
 			unit.name = unitPrefabs[prefabIndex].name;
 			unit.transform.SetParent(container);
 
@@ -99,12 +98,10 @@ public class SummonManager : Singleton<SummonManager>
 
 		if (player.CurrentMana >= manaCost)
 		{
-			float x = Random.Range(PlayerMovement.Position.x - summonRange.x, PlayerMovement.Position.x + summonRange.x);
-			float y = Random.Range(PlayerMovement.Position.y - summonRange.y, PlayerMovement.Position.y + summonRange.y);
-
 			int prefabIndex = index == 0 ? Random.Range(0, 2) : index + 1;
+			Vector2 pos = ChooseSummonPosition();
 
-			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(x, y), Quaternion.identity);
+			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(pos.x, pos.y), Quaternion.identity);
 			unit.name = unitPrefabs[prefabIndex].name;
 			unit.transform.SetParent(container);
 
@@ -128,5 +125,26 @@ public class SummonManager : Singleton<SummonManager>
 
 		if (!_maxUnitReached)
 			unitButtons.ForEach(button => button.ValidateManaPoint(initialMana));
+	}
+
+	private Vector2 ChooseSummonPosition()
+	{
+		bool validPos = false;
+		Vector2 pos = PlayerMovement.Position;
+
+		while (!validPos)
+		{
+			pos = PlayerMovement.Position + Random.insideUnitCircle * summonRadius;
+			validPos = Physics2D.OverlapPoint(pos, terrainLayers) == null;
+		}
+
+		return pos;
+
+	}
+
+	private void OnDrawGizmosSelected()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawWireSphere(PlayerMovement.Position, summonRadius);
 	}
 }

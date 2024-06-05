@@ -56,5 +56,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Necrogirl.sln"
+    "dotnet.defaultSolution": "Necrogirl.sln",
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false
 }

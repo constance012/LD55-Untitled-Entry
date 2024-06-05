@@ -124,6 +124,8 @@ MonoBehaviour:
   spotLayer:
     serializedVersion: 2
     m_Bits: 520
+  wanderSpeedMultiplier: 0.6
+  wanderDelayRange: {x: 1, y: 3}
 --- !u!114 &4499327965451284646
 MonoBehaviour:
   m_ObjectHideFlags: 0

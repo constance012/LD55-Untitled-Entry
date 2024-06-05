@@ -8,6 +8,9 @@ public abstract class EnemyStats : EntityStats
 
 	[Header("Health Bar"), Space]
 	[SerializeField] protected WorldHealthBar healthBar;
+	
+	[Header("Animator"), Space]
+	[SerializeField] protected Animator animator;
 
 	// Properties.
 	public float RangedAttackRadius => _rangedAttackRadius;

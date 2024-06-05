@@ -80,7 +80,7 @@ public class PlayerStats : EntityStats
 			GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 			projectile.name = projectilePrefab.name;
 			projectile.transform.eulerAngles = Vector3.forward * angle;
-			projectile.GetComponent<SimpleProjectile>().Initialize(this.stats, null);
+			projectile.GetComponent<SimpleProjectile>().Initialize(this, this.stats, null);
 
 			_attackInterval = BaseAttackInterval;
 

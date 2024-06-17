@@ -1,13 +1,16 @@
 using UnityEngine;
-using AYellowpaper.SerializedCollections;
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using CSTGames.Utility;
 
-[CreateAssetMenu(menuName = "Unit Stats", fileName = "New Blank Stats")]
+[CreateAssetMenu(menuName = "Unit Stats/Stats", fileName = "New Blank Stats")]
 public class Stats : ScriptableObject
 {
 	[Header("Stats"), Space]
+	[Tooltip("Static stats are GLOBAL stats shared between objects, which CAN NOT be modified by upgrades.")]
 	public SerializedDictionary<Stat, float> staticStats = new SerializedDictionary<Stat, float>();
+
+	[Tooltip("Dynamic stats are GLOBAL stats shared between objects, which CAN be modified by upgrades.")]
 	public SerializedDictionary<Stat, float> dynamicStats = new SerializedDictionary<Stat, float>();
 
 	// Private fields.
@@ -26,6 +29,11 @@ public class Stats : ScriptableObject
 	{
 		if (!appliedUpgrades.Contains(upgrade))
 			appliedUpgrades.Add(upgrade);
+	}
+
+	public void RemoveUpgrade(StatsUpgrade upgrade)
+	{
+		appliedUpgrades.Remove(upgrade);
 	}
 
 	public void ClearUpgrades()
@@ -75,7 +83,7 @@ public class Stats : ScriptableObject
 				continue;
 			
 			if (upgrade.isPercentageUpgrade)
-				baseValue *= 1f + (upgradeValue / 100f);
+				baseValue *= 1f + upgradeValue;
 			else
 				baseValue += upgradeValue;
 		}

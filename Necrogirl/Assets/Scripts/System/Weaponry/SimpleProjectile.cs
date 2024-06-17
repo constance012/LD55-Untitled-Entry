@@ -15,9 +15,9 @@ public sealed class SimpleProjectile : ProjectileBase
 	{
 		EntityStats target = other.collider.GetComponentInParent<EntityStats>();
 
-		if (target != null)
+		if (target != null && _wearer != null)
 		{
-			target.TakeDamage(_wearerStats.GetDynamicStat(Stat.Damage), false, transform.position, _wearerStats.GetStaticStat(Stat.KnockBackStrength));
+			target.TakeDamage(_wearerStats.GetDynamicStat(Stat.Damage), false, _wearer.transform.position, _wearerStats.GetStaticStat(Stat.KnockBackStrength));
 
 			float lifeStealRatio = _wearerStats.GetStaticStat(Stat.LifeStealRatio);
 			if (lifeStealRatio != -1f)

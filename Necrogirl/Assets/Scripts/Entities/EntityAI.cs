@@ -14,10 +14,18 @@ public abstract class EntityAI : Seeker
 	[SerializeField] private float repelRange;
 	[SerializeField] private float repelAmplitude;
 
-	[Header("Spotting Settings")]
+	[Header("Spotting Settings"), Space]
 	[SerializeField] protected float aggroRange;
 	[SerializeField] protected float spotTimer;
+	[SerializeField] protected float standingStillTimeout;
 	[SerializeField] protected LayerMask spotLayer;
+
+	[Header("Abandon Settings"), Space]
+	[SerializeField] protected float abandonTimer;
+	[SerializeField, Range(0f, 1f)] protected float decrementPerTarget;
+
+	// Properties.
+	protected float ScaledAbandonTimer => abandonTimer * Mathf.Max(.2f, 1f - decrementPerTarget * _inAggroTargets.Count);
 
 	// Protected fields.
 	protected static HashSet<Rigidbody2D> _nearbyEntities;
@@ -27,6 +35,11 @@ public abstract class EntityAI : Seeker
 	protected Vector2 _targetPreviousPos;
 	protected bool _facingRight = true;
 	protected bool _forcedStopMoving;
+	protected bool _spottedTarget;
+	protected float _spotTimer;
+	protected float _standingStillTimeout;
+	protected float _abandonTimer;
+	protected bool _abandonedTarget;
 
 	protected virtual void Start()
 	{
@@ -36,6 +49,10 @@ public abstract class EntityAI : Seeker
 
 		_contactFilter.layerMask = spotLayer;
 		_contactFilter.useLayerMask = true;
+
+		_spotTimer = spotTimer;
+		_standingStillTimeout = standingStillTimeout;
+		_abandonTimer = abandonTimer;
 	}
 
 	private void OnDestroy()
@@ -46,19 +63,97 @@ public abstract class EntityAI : Seeker
 	protected virtual void FixedUpdate()
 	{
 		animator.SetFloat("Speed", rb2D.velocity.sqrMagnitude);
+
+		if (animator.GetFloat("Speed") < .04f)
+			_standingStillTimeout -= Time.deltaTime;
+		else
+			_standingStillTimeout = standingStillTimeout;
 	}
 
 	protected void RequestNewPath(Vector3 toPos)
 	{
 		// Request a path if the target has moved a certain distance fron the last position.
-		if (Vector3.Distance(toPos, _targetPreviousPos) >= maxMovementDelta)
+		if (Vector3.Distance(toPos, _targetPreviousPos) >= maxMovementDelta || _standingStillTimeout <= 0f)
 		{
 			PathRequester.Request(new PathRequestData(transform.position, toPos, this.gameObject, OnPathFound));
 			_targetPreviousPos = toPos;
+			_standingStillTimeout = standingStillTimeout;
+		}
+	}
+	
+	protected bool LocateTarget()
+    {
+		float distanceToTarget = target != null ? Vector2.Distance(transform.position, target.position) :
+												Vector2.Distance(transform.position, PlayerMovement.Position);
+
+		if (!_spottedTarget)
+			TryAlertTarget(distanceToTarget);
+		else
+			TryAbandonTarget(distanceToTarget);
+		
+		return _spottedTarget;
+	}
+
+	protected void ChaseTarget()
+	{	
+		if (TrySelectTarget() && target != null)
+			ProcessTarget();
+		else
+		{
+			if (_inAggroTargets.Count > 0)
+				_inAggroTargets.Clear();
+			
+			_forcedStopMoving = false;
+			_spottedTarget = false;
+			_spotTimer = spotTimer;
 		}
 	}
 
-	protected abstract bool TrySelectTarget();
+	protected virtual void ProcessTarget()
+	{
+		RequestNewPath(target.position);
+	}
+
+	protected bool TrySelectTarget()
+	{
+		int hitColliders = Physics2D.OverlapCircle(transform.position, aggroRange, _contactFilter, _hitTargets);
+
+		if (hitColliders > 0)
+		{
+			_inAggroTargets.Clear();
+			for (int i = 0; i < hitColliders; i++)
+			{
+				EntityStats entity = _hitTargets[i].GetComponentInParent<EntityStats>();
+
+				if (entity != null && entity.transform != target)
+					_inAggroTargets.Add(entity);
+			}
+			
+			// Sort by priority if the list is not empty.
+			if (_inAggroTargets.Count > 0)
+			{
+				// Locate new target only if the current one is dead or abandoned.
+				if (_abandonedTarget || target == null)
+				{
+					_inAggroTargets.Sort();
+
+					// Only assign new target if it's different from the previous one.
+					if (target != _inAggroTargets[0].transform)
+					{
+						target = _inAggroTargets[0].transform;
+						_abandonedTarget = false;
+					}
+				}	
+			}
+
+			return !_abandonedTarget;
+		} 
+
+		return false;
+	}
+	
+	protected abstract void TryAbandonTarget(float distanceToTarget);
+	public abstract void TryAlertTarget(float distanceToTarget, bool forced = false);
 
 	protected override IEnumerator ExecuteFoundPath(int previousIndex = -1)
 	{
@@ -69,7 +164,7 @@ public abstract class EntityAI : Seeker
 
 		//Debug.Log($"{gameObject.name} following path...");
 
-		while (!_forcedStopMoving)
+		while (!_forcedStopMoving && _path.Length > 0)
 		{
 			float distanceToCurrent = Vector2.Distance(rb2D.position, currentWaypoint);
 
@@ -80,8 +175,7 @@ public abstract class EntityAI : Seeker
 				// If there's no more waypoints to move, then simply returns out of the coroutine.
 				if (_waypointIndex >= _path.Length)
 				{
-					Debug.Log("No waypoint left.");
-					StopFollowPath();
+					StopFollowingPath();
 					yield break;
 				}
 
@@ -98,11 +192,14 @@ public abstract class EntityAI : Seeker
 			yield return new WaitForFixedUpdate();
 		}
 
-		StopFollowPath();
+		StopFollowingPath();
 	}
 
-	protected void StopFollowPath()
+	protected void StopFollowingPath()
 	{
+		Debug.Log("Finished following path.");
+
+		_finishedFollowingPath = true;
 		_waypointIndex = 0;
 		_path = new Vector3[0];
 		rb2D.velocity = Vector2.zero;
@@ -110,7 +207,7 @@ public abstract class EntityAI : Seeker
 
 	protected void CheckFlip()
 	{
-		float sign = target == null ? Mathf.Sign(rb2D.velocity.x) : Mathf.Sign(target.position.x - rb2D.position.x);
+		float sign = target != null ? Mathf.Sign(target.position.x - rb2D.position.x) : Vector2.Dot(rb2D.velocity.normalized, Vector2.right);
 		bool mustFlip = (_facingRight && sign < 0f) || (!_facingRight && sign > 0f);
 
 		if (mustFlip)
@@ -121,18 +218,19 @@ public abstract class EntityAI : Seeker
 	}
 
 	/// <summary>
-	/// Calculate the final velocity after applying repel force against other enemies nearby.
+	/// Calculate the final velocity after applying repel force against other entities nearby.
 	/// </summary>
 	/// <param name="direction"></param>
+	/// <param name="externalMultiplier"></param>
 	/// <returns></returns>
-	protected Vector2 CalculateVelocity(Vector2 direction, float externalMultiplier = 1f)
+	protected Vector2 CalculateVelocity(Vector2 direction)
 	{
 		// Enemies will try to avoid each other.
 		Vector2 repelForce = Vector2.zero;
 
 		foreach (Rigidbody2D entity in _nearbyEntities)
 		{
-			if (entity == rb2D)
+			if (entity == rb2D || entity.velocity.sqrMagnitude < 1f)
 				continue;
 
 			if (Vector2.Distance(entity.position, rb2D.position) <= repelRange)
@@ -142,7 +240,7 @@ public abstract class EntityAI : Seeker
 			}
 		}
 
-		Vector2 velocity = direction * stats.GetDynamicStat(Stat.MoveSpeed) * externalMultiplier;
+		Vector2 velocity = stats.GetDynamicStat(Stat.MoveSpeed) * direction;
 		velocity += repelForce.normalized * repelAmplitude;
 
 		return velocity;

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
-  category: 4
+  category: 3
   itemName: Coin
   description: 
   icon: {fileID: 21300000, guid: 9daa1f500c215e243bdfba9c97c1b72d, type: 3}

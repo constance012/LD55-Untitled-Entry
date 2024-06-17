@@ -36,13 +36,13 @@ public abstract class ProjectileBase : MonoBehaviour
 
 	protected virtual void FixedUpdate()
 	{
+		TravelForwards();
+
 		if (PlayerStats.IsDeath)
 		{
 			targetToTrack = null;
 		 	return;
 		}
-
-		TravelForwards();
 
 		TrackingTarget();
 	}

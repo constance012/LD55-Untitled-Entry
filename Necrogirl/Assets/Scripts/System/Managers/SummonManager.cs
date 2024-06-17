@@ -8,8 +8,6 @@ public class SummonManager : Singleton<SummonManager>
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private HealthBar playerManaBar;
 	[SerializeField] private List<UnitButton> unitButtons;
-	[SerializeField] private List<GameObject> unitPrefabs;
-	[SerializeField] private List<Stats> unitStats;
 	[SerializeField] private Transform container;
 	
 	[Header("UI References"), Space]
@@ -72,16 +70,16 @@ public class SummonManager : Singleton<SummonManager>
 
 	public void SummonUnit(int index)
 	{
-		float manaCost = unitStats[index].GetStaticStat(Stat.ManaCost);
-		Debug.Log(manaCost);
+		float manaCost = EntityDatabase.Instance.unitStats[index].GetStaticStat(Stat.ManaCost);
 
 		if (player.CurrentMana >= manaCost)
 		{
 			int prefabIndex = index == 0 ? Random.Range(0, 2) : index + 1;
 			Vector2 pos = ChooseSummonPosition();
 
-			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(pos.x, pos.y), Quaternion.identity);
-			unit.name = unitPrefabs[prefabIndex].name;
+			EntityDatabase.Instance.TryGetEntityByIndex(EntityType.Unit, prefabIndex, out GameObject prefab);
+			GameObject unit = Instantiate(prefab, new Vector2(pos.x, pos.y), Quaternion.identity);
+			unit.name = prefab.name;
 			unit.transform.SetParent(container);
 
 			player.ConsumeMana(manaCost);
@@ -94,18 +92,18 @@ public class SummonManager : Singleton<SummonManager>
 	public void SummonUnit(UnitButton button)
 	{
 		int index = button.transform.GetSiblingIndex();
-		float manaCost = unitStats[index].GetStaticStat(Stat.ManaCost);
 
-		if (player.CurrentMana >= manaCost)
+		if (player.CurrentMana >= button.ManaCost)
 		{
 			int prefabIndex = index == 0 ? Random.Range(0, 2) : index + 1;
 			Vector2 pos = ChooseSummonPosition();
 
-			GameObject unit = Instantiate(unitPrefabs[prefabIndex], new Vector2(pos.x, pos.y), Quaternion.identity);
-			unit.name = unitPrefabs[prefabIndex].name;
+			EntityDatabase.Instance.TryGetEntityByIndex(EntityType.Unit, prefabIndex, out GameObject prefab);
+			GameObject unit = Instantiate(prefab, new Vector2(pos.x, pos.y), Quaternion.identity);
+			unit.name = prefab.name;
 			unit.transform.SetParent(container);
 
-			player.ConsumeMana(manaCost);
+			player.ConsumeMana(button.ManaCost);
 			
 			_cooldown = cooldown;
 		}

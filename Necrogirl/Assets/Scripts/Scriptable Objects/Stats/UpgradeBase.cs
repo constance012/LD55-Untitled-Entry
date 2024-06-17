@@ -7,6 +7,10 @@ public abstract class UpgradeBase : ScriptableObject
     public string upgradeName;
     public string description;
     public int goldCost;
+
+	// Properties.
+	public bool IsApplied { get; set; }
     
     public abstract void DoUpgrade();
+	public abstract void RemoveUpgrade();
 }

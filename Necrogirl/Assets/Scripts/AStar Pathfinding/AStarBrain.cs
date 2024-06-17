@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityDebug = UnityEngine.Debug;
 
 public class AStarBrain : MonoBehaviour
 {
@@ -106,26 +107,31 @@ public class AStarBrain : MonoBehaviour
 	{
 		List<Vector3> waypoints = new List<Vector3>();
 		Vector2 oldDir = Vector2.zero;
-
-		for (int i = 1; i < path.Count; i++)
+		
+		if (path.Count == 1)
 		{
-			Vector2 newDir = new Vector2(path[i - 1].x - path[i].x, path[i - 1].y - path[i].y);
-
-			if (oldDir != newDir)
-				waypoints.Add(path[i - 1].worldPosition);
-
-			oldDir = newDir;
-
-			// If this is the starting node of the path, means it's at the last index of the list.
-			// Add it as a waypoint if the direction from the provided start node to it changed.
-			if (i == path.Count - 1)
-			{
-				Vector2 dirToLastNode = new Vector2(path[i].x - startNode.x, path[i].y - startNode.y);
-
-				if (oldDir != dirToLastNode)
-					waypoints.Add(path[i].worldPosition);
-			}
+			waypoints.Add(path[0].worldPosition);
 		}
+		else
+			for (int i = 1; i < path.Count; i++)
+			{
+				Vector2 newDir = new Vector2(path[i - 1].x - path[i].x, path[i - 1].y - path[i].y).normalized;
+
+				if (oldDir != newDir)
+					waypoints.Add(path[i - 1].worldPosition);
+
+				oldDir = newDir;
+
+				// If this is the starting node of the path, means it's at the last index of the list.
+				// Add it as a waypoint if the direction from the provided start node to it changed.
+				if (i == path.Count - 1)
+				{
+					Vector2 dirToLastNode = new Vector2(path[i].x - startNode.x, path[i].y - startNode.y).normalized;
+
+					if (oldDir != dirToLastNode)
+						waypoints.Add(path[i].worldPosition);
+				}
+			}
 
 		return waypoints.ToArray();
 	}

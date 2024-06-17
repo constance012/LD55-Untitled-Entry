@@ -26,7 +26,7 @@ public class HealerUnit : UnitStats
 
     protected override IEnumerator DoAttack()
     {
-		int hitColliders = Physics2D.OverlapCircle(transform.position, _rangedAttackRadius, _contactFilter, _hitObjects);
+		int hitColliders = Physics2D.OverlapCircle(transform.position, attackRadius, _contactFilter, _hitObjects);
 
 		if (hitColliders > 0)
 		{

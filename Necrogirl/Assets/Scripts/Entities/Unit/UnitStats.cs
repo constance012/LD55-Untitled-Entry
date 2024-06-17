@@ -3,19 +3,15 @@ using UnityEngine;
 public abstract class UnitStats : EntityStats
 {
 	[Header("Attacking Settings"), Space]
-	[SerializeField] protected Vector2 attackRange;
+	public float attackRadius;
 	[SerializeField] protected LayerMask hitLayer;
 
 	[Header("Health Bar"), Space]
 	[SerializeField] protected WorldHealthBar healthBar;
 
-	// Properties.
-	public float RangedAttackRadius => _rangedAttackRadius;
-
 	// Protected fields.
 	protected Collider2D[] _hitObjects = new Collider2D[2];
 	protected ContactFilter2D _contactFilter;
-	protected float _rangedAttackRadius;
 
 	private void Awake()
 	{
@@ -28,7 +24,6 @@ public abstract class UnitStats : EntityStats
 
 		_contactFilter.layerMask = hitLayer;
 		_contactFilter.useLayerMask = true;
-		_rangedAttackRadius = attackRange.x / 2f;
 
 		healthBar.SetMaxHealth(stats.GetDynamicStat(Stat.MaxHealth));
 		healthBar.name = $"{gameObject.name} Health Bar";
@@ -75,7 +70,7 @@ public abstract class UnitStats : EntityStats
 
 	private void OnDrawGizmosSelected()
 	{
-		Gizmos.color = Color.white;
-		Gizmos.DrawWireCube(transform.position, attackRange);
+		Gizmos.color = Color.cyan;
+		Gizmos.DrawWireSphere(transform.position, attackRadius);
 	}
 }

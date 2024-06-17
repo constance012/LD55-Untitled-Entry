@@ -19,12 +19,14 @@ public class RangedEnemy : EnemyStats
 	{
 		Transform currentTarget = _enemyBrain.target;
 
-		if (currentTarget != null && Vector3.Distance(currentTarget.position, transform.position) <= _rangedAttackRadius)
+		if (currentTarget != null && Vector3.Distance(currentTarget.position, transform.position) <= attackRadius)
 		{
 			rb2D.velocity = Vector2.zero;
 
 			brain.enabled = false;
-			animator.Play("Use Spell");
+
+			if (rpgClass == EntityRPGClass.Magic)
+				animator.Play("Use Spell");
 
 			Vector2 direction = (currentTarget.position - transform.position).normalized;
 			float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

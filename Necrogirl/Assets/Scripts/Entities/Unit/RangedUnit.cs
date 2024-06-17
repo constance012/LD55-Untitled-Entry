@@ -19,7 +19,7 @@ public class RangedUnit : UnitStats
     {
 		Transform currentTarget = _unitBrain.target;
 
-		if (currentTarget != null && Vector3.Distance(currentTarget.position, transform.position) <= _rangedAttackRadius && !_unitBrain.TargetIsPlayer)
+		if (currentTarget != null && Vector3.Distance(currentTarget.position, transform.position) <= attackRadius)
 		{
 			rb2D.velocity = Vector2.zero;
 

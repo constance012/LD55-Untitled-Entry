@@ -7,15 +7,14 @@ public abstract class Seeker : MonoBehaviour
 	[SerializeField] private bool seekOnStart;
 
 	[Header("Movement Delta"), Space]
-	public Transform target;
+	[ReadOnly] public Transform target;
 	[SerializeField] protected float maxMovementDelta;
 
-	// Private fields.
+	// Protected fields.
 	protected Vector3[] _path;
 	protected Coroutine _followCoroutine;
-	
 	protected int _waypointIndex;
-	protected bool _finishedFollowingPath;
+	protected bool _finishedFollowingPath = true;
 
 	private IEnumerator Start()
 	{
@@ -41,6 +40,7 @@ public abstract class Seeker : MonoBehaviour
 			if (gameObject == null)
 				return;
 
+			_finishedFollowingPath = false;
 			_path = newPath;
 			_waypointIndex = 0;
 

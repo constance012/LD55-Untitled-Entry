@@ -81,9 +81,8 @@ public enum ItemCategory
 {
 	Null,
 	Consumable,
-	Potion,
 	Material,
 	Coin,
-	Special,
+	Upgrade,
 	KeyItem
 }

@@ -133,10 +133,13 @@ MonoBehaviour:
   repelAmplitude: 3
   aggroRange: 17
   spotTimer: 0.5
+  standingStillTimeout: 2
   spotLayer:
     serializedVersion: 2
     m_Bits: 520
-  wanderSpeedMultiplier: 0.6
+  abandonTimer: 6
+  decrementPerTarget: 0
+  wanderSpeedUpgrade: {fileID: 11400000, guid: 84d3f7aa9be0cfb4f8ad3fbf1cf4d356, type: 2}
   wanderDelayRange: {x: 1, y: 3}
   retreatMinDistance: 3.5
 --- !u!114 &4193198861709201875
@@ -156,10 +159,11 @@ MonoBehaviour:
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 5f49446ecb806b547a91c345d9b6b407, type: 3}
   dmgTextLoc: {fileID: 8907454796238077921}
   stats: {fileID: 11400000, guid: a733902aaf4a0d643984a85540c14d7f, type: 2}
+  rpgClass: 2
   damageFlashTime: 0.2
   priority: 4
   deathEffect: {fileID: 8785179139041795559, guid: 90f8049227c718b45a849b688c69c3e4, type: 3}
-  attackRange: {x: 10, y: 10}
+  attackRadius: 5
   hitLayer:
     serializedVersion: 2
     m_Bits: 520

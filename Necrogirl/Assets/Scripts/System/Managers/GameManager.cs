@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,8 +21,9 @@ public class GameManager : Singleton<GameManager>
 	// Private fields.
 	private int _maxEnemies;
 
-	private void Start()
+	private IEnumerator Start()
 	{
+		yield return new WaitForSecondsRealtime(.1f);
 		_maxEnemies = enemyContainer.childCount;
 	}
 

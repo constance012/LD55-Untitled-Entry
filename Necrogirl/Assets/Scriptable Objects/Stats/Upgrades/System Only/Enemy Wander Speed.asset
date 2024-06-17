@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86faf841440decc428eefb31ef9583bb, type: 3}
+  m_Name: Enemy Wander Speed
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  upgradeName: Enemy Wandering Speed Multiplier
+  description: Modify the movement speed of enemy in wandering state.
+  goldCost: -1
+  unitsToApply:
+  - {fileID: 11400000, guid: 10b47558c755c5449b5bfe3685e76637, type: 2}
+  - {fileID: 11400000, guid: 84c965942f2a1764ea308231f1448aba, type: 2}
+  - {fileID: 11400000, guid: d3c53e7109b92ac409d7826b94eff0a2, type: 2}
+  - {fileID: 11400000, guid: 8549261ce51a62348b63d190d54749a8, type: 2}
+  - {fileID: 11400000, guid: a733902aaf4a0d643984a85540c14d7f, type: 2}
+  affectedStats:
+    _serializedList:
+    - Key: 4
+      Value: -0.4
+  isPercentageUpgrade: 1

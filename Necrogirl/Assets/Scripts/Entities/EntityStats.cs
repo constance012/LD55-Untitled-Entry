@@ -6,7 +6,7 @@ public abstract class EntityStats : MonoBehaviour, IComparable<EntityStats>
 {
 	[Header("Component References"), Space]
 	[SerializeField] protected Rigidbody2D rb2D;
-	[SerializeField] protected MonoBehaviour brain;
+	[SerializeField, Tooltip("A script controlling this entity.")] protected MonoBehaviour brain;
 
 	[Header("Damage Text"), Space]
 	[SerializeField] protected GameObject dmgTextPrefab;
@@ -14,6 +14,7 @@ public abstract class EntityStats : MonoBehaviour, IComparable<EntityStats>
 
 	[Header("Base Stats"), Space]
 	[SerializeField] protected Stats stats;
+	[SerializeField] protected EntityRPGClass rpgClass;
 	[SerializeField] protected float damageFlashTime;
 	[SerializeField] protected int priority;
 
@@ -41,6 +42,10 @@ public abstract class EntityStats : MonoBehaviour, IComparable<EntityStats>
 
 	public virtual void TakeDamage(float amount, bool weakpointHit, Vector3 attackerPos = default, float knockBackStrength = 0f)
 	{
+		// Alert immediately if this enemy takes damage.
+		if (!brain.CompareTag("Player"))
+			(brain as EntityAI).TryAlertTarget(Vector2.Distance(transform.position, attackerPos), true);
+
 		AudioManager.Instance.PlayWithRandomPitch("Taking Damage", .7f, 1.2f);
 		
 		_currentHealth -= amount;
@@ -123,11 +128,19 @@ public abstract class EntityStats : MonoBehaviour, IComparable<EntityStats>
 		else if (this.priority != 0 && other.priority == 0)
 			return -1;
 
-		// Else, priortize the unit with the highest priority value.
-		if (this.priority != other.priority)
-			return other.priority - this.priority;
+		// Else, priortize the unit with the lower health.
+		if (this.CurrentHealthNormalized < other.CurrentHealthNormalized)
+			return -1;
 		       
-		// Lastly, priortize the unit with the lower health.
-		return this.CurrentHealthNormalized.CompareTo(other.CurrentHealthNormalized);
+		// Lastly, priortize the unit with the highest priority value.
+		return other.priority - this.priority;
     }
+}
+
+public enum EntityRPGClass
+{
+	Melee,
+	Ranged,
+	Magic,
+	Healer
 }

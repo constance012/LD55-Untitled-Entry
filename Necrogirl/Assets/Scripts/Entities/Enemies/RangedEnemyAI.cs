@@ -5,25 +5,10 @@ public class RangedEnemyAI : MeleeEnemyAI
 	[Header("Keep Distance Settings"), Space]
 	[SerializeField] private float retreatMinDistance;
 
-	// Protected fields.
-	protected EnemyStats _enemyStats;
-
-    protected override void Start()
-    {
-        base.Start();
-		_enemyStats = heart as EnemyStats;
-    }
-
-    protected override void ChaseTarget()
-	{
-		if (TrySelectTarget() && target != null)
-			ProcessTarget();
-	}
-
-	private void ProcessTarget()
+	protected override void ProcessTarget()
 	{
 		float distance = Vector3.Distance(target.position, transform.position);
-		_forcedStopMoving = distance <= _enemyStats.RangedAttackRadius;
+		_forcedStopMoving = distance <= _enemyStats.attackRadius;
 
 		if (distance <= retreatMinDistance)
 		{
@@ -34,7 +19,7 @@ public class RangedEnemyAI : MeleeEnemyAI
 
 			rb2D.velocity = velocity;
 		}
-		else if (distance >= _enemyStats.RangedAttackRadius)
+		else if (distance >= _enemyStats.attackRadius)
 		{
 			_forcedStopMoving = false;
 			RequestNewPath(target.position);

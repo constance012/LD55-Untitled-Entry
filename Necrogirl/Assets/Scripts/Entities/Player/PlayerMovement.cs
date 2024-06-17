@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private float acceleration;
 	[SerializeField] private float deceleration;
 
+	// Properties.
 	public static Vector2 Position { get; private set; }
 
 	// Private fields.
@@ -20,27 +21,25 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Update()
 	{
-		if (GameManager.Instance.GameFinished)
-			return;
-
 		_movementDirection.x = InputManager.Instance.GetAxisRaw("Horizontal");
 		_movementDirection.y = InputManager.Instance.GetAxisRaw("Vertical");
 		_movementDirection.Normalize();
 
-		if (_movementDirection.magnitude > .1f)
+		if (_movementDirection.sqrMagnitude > .01f)
 			_previousDirection = _movementDirection;
 	}
 	
 	private void FixedUpdate()
 	{
+		if (GameManager.Instance.GameFinished)
+			return;
+		
 		UpdateVelocity();
-
-		Position = rb2D.position;
 	}
 
 	private void UpdateVelocity()
 	{
-		if (_movementDirection.magnitude > .1f)
+		if (_movementDirection.sqrMagnitude > .01f)
 		{
 			_currentSpeed += acceleration * Time.deltaTime;
 			_currentSpeed = Mathf.Min(stats.GetDynamicStat(Stat.MoveSpeed), _currentSpeed);
@@ -56,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
 			rb2D.velocity = _previousDirection * _currentSpeed;
 		}
 
-		animator.SetFloat("Speed", rb2D.velocity.magnitude);
+		animator.SetFloat("Speed", rb2D.velocity.sqrMagnitude);
+		Position = rb2D.position;
 	}
 }

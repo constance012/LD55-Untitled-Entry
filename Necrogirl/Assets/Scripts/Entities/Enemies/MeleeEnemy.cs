@@ -5,7 +5,7 @@ public class MeleeEnemy : EnemyStats
 {
 	protected override IEnumerator DoAttack()
 	{
-		int hitColliders = Physics2D.OverlapBox(transform.position, attackRange, 0f, _contactFilter, _hitObjects);
+		int hitColliders = Physics2D.OverlapBox(transform.position, Vector2.one * attackRadius, 0f, _contactFilter, _hitObjects);
 
 		if (hitColliders > 0)
 		{

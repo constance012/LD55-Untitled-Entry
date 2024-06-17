@@ -3,7 +3,7 @@
 public abstract class EnemyStats : EntityStats
 {
 	[Header("Attacking Settings"), Space]
-	[SerializeField] protected Vector2 attackRange;
+	public float attackRadius;
 	[SerializeField] protected LayerMask hitLayer;
 
 	[Header("Health Bar"), Space]
@@ -12,13 +12,10 @@ public abstract class EnemyStats : EntityStats
 	[Header("Animator"), Space]
 	[SerializeField] protected Animator animator;
 
-	// Properties.
-	public float RangedAttackRadius => _rangedAttackRadius;
 
 	// Protected fields.
 	protected Collider2D[] _hitObjects = new Collider2D[2];
 	protected ContactFilter2D _contactFilter;
-	protected float _rangedAttackRadius;
 
 	private void Awake()
 	{
@@ -31,7 +28,6 @@ public abstract class EnemyStats : EntityStats
 
 		_contactFilter.layerMask = hitLayer;
 		_contactFilter.useLayerMask = true;
-		_rangedAttackRadius = attackRange.x / 2f;
 
 		healthBar.SetMaxHealth(stats.GetDynamicStat(Stat.MaxHealth));
 		healthBar.name = $"{gameObject.name} Health Bar";
@@ -57,8 +53,6 @@ public abstract class EnemyStats : EntityStats
 
     public override void TakeDamage(float amount, bool weakpointHit, Vector3 attackerPos = default, float knockBackStrength = 0)
 	{
-		(brain as MeleeEnemyAI).Alert();
-
 		base.TakeDamage(amount, weakpointHit, attackerPos, knockBackStrength);
 
 		healthBar.SetCurrentHealth(_currentHealth);
@@ -80,7 +74,7 @@ public abstract class EnemyStats : EntityStats
 
 	private void OnDrawGizmosSelected()
 	{
-		Gizmos.color = Color.white;
-		Gizmos.DrawWireCube(transform.position, attackRange);
+		Gizmos.color = Color.cyan;
+		Gizmos.DrawWireSphere(transform.position, attackRadius);
 	}
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
+[CreateAssetMenu(menuName = "Unit Stats/Upgrades", fileName = "New Blank Upgrade")]
 public class StatsUpgrade : UpgradeBase
 {
 	[Header("Detail"), Space]
@@ -11,9 +12,21 @@ public class StatsUpgrade : UpgradeBase
 
 	public override void DoUpgrade()
 	{
-		foreach (Stats unit in unitsToApply)
+		if (!IsApplied)
 		{
-			unit.AddUpgrade(this);
+			Debug.Log($"Applying \"{this.upgradeName}\" upgrade...");
+			unitsToApply.ForEach(unit => unit.AddUpgrade(this));
+			IsApplied = true;
+		}
+	}
+
+	public override void RemoveUpgrade()
+	{
+		if (IsApplied)
+		{
+			Debug.Log($"Removing \"{this.upgradeName}\" upgrade...");
+			unitsToApply.ForEach(unit => unit.RemoveUpgrade(this));
+			IsApplied = false;
 		}
 	}
 }

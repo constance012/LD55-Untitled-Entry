@@ -3,13 +3,14 @@
 public class MeleeEnemyAI : EntityAI
 {
 	[Header("Wandering Settings"), Space]
-	[SerializeField, Range(.2f, .8f)] private float wanderSpeedMultiplier;
+	[SerializeField] private StatsUpgrade wanderSpeedUpgrade;
 	[SerializeField, Tooltip("The amount of time before picking a new wandering destination")]
 	private Vector2 wanderDelayRange;
 
+	// Protected fields.
+	protected EnemyStats _enemyStats;
+
 	// Private fields.
-	private bool _spottedPlayer;
-	private float _spotTimer;
 	private EnemySpawner _spawnPoint;
 	private Vector2 _wanderDestination;
 	private float _wanderDelay = 0f;
@@ -17,17 +18,14 @@ public class MeleeEnemyAI : EntityAI
 	protected override void Start()
 	{
 		base.Start();
-		_spotTimer = spotTimer;
+		_enemyStats = heart as EnemyStats;
 	}
 
     protected override void FixedUpdate()
     {
-		if (PlayerStats.IsDeath)
-			return;
-
 		base.FixedUpdate();
 
-		if (SpotTarget())
+		if (LocateTarget() && !PlayerStats.IsDeath)
 			ChaseTarget();
 		else
 			WanderAround();
@@ -40,95 +38,66 @@ public class MeleeEnemyAI : EntityAI
 		_wanderDelay = Random.Range(wanderDelayRange.x, wanderDelayRange.y);
 	}
 
-	public void Alert()
+	public override void TryAlertTarget(float distanceToTarget, bool forced = false)
 	{
-		_spottedPlayer = true;
-		_spotTimer = 0f;
-
-		_nearbyEntities.Add(rb2D);
-	}
-
-	protected virtual void ChaseTarget()
-	{	
-		if (TrySelectTarget() && target != null)
-			RequestNewPath(target.position);
-	}
-
-    protected override bool TrySelectTarget()
-    {
-		int hitColliders = Physics2D.OverlapCircle(transform.position, aggroRange, _contactFilter, _hitTargets);
-
-		if (hitColliders > 0)
+		if (distanceToTarget <= aggroRange)
 		{
-			_inAggroTargets.Clear();
-			for (int i = 0; i < hitColliders; i++)
+			_spotTimer -= Time.deltaTime;
+			if ((_spotTimer <= 0f && !_abandonedTarget) || forced)
 			{
-				EntityStats entity = _hitTargets[i].GetComponentInParent<EntityStats>();
+				if (forced)
+					_abandonedTarget = false;
+				
+				_spottedTarget = true;
+				_spotTimer = 0f;
 
-				if (entity != null)
-					_inAggroTargets.Add(entity);
+				_nearbyEntities.Add(rb2D);
 			}
-			
-			// Sort by priority if the list is not empty.
-			if (_inAggroTargets.Count > 0)
+		}
+		else
+			_spotTimer = spotTimer;
+	}
+
+	protected override void TryAbandonTarget(float distanceToTarget)
+	{
+		bool targetTooFarAway = distanceToTarget > _spawnPoint.range + _enemyStats.attackRadius * 2;
+
+		if (distanceToTarget > _enemyStats.attackRadius || targetTooFarAway)
+		{
+			_abandonTimer -= Time.deltaTime;
+			if (_abandonTimer <= 0f && target != null)
 			{
-				// Only assign new target if it's different from the previous one or the previous is null.
-				if (target == null || target != _inAggroTargets[0].transform)
-				{
-					_inAggroTargets.Sort();
-					target = _inAggroTargets[0].transform;
-					Debug.Log(target.name);
-				}
+				StopFollowingPath();
+				
+				_nearbyEntities.Remove(rb2D);
+				_inAggroTargets.Clear();
+				_abandonedTarget = true;
+				_abandonTimer = ScaledAbandonTimer;
 			}
-
-			return _inAggroTargets.Count > 0;
-		} 
-
-		return false;
-    }
+		}
+		else
+			_abandonTimer = ScaledAbandonTimer;
+	}
 
 	private void WanderAround()
 	{
-		if (_wanderDelay <= 0f && rb2D.velocity == Vector2.zero)
+		if (_wanderDelay <= 0f)
 		{
 			_wanderDestination = _spawnPoint.position + Random.insideUnitCircle * _spawnPoint.range;
 			_wanderDelay = Random.Range(wanderDelayRange.x, wanderDelayRange.y);
+			_finishedFollowingPath = false;
 		}
 		else
 		{
-			Vector2 direction = _wanderDestination - rb2D.position;
-			if (direction.sqrMagnitude > .2f * .2f)
+			if (!_finishedFollowingPath)
 			{
-				Vector2 velocity = CalculateVelocity(direction.normalized, wanderSpeedMultiplier);
-
-				CheckFlip();
-				rb2D.velocity = velocity;
+				RequestNewPath(_wanderDestination);
 			}
 			else
 			{
-				rb2D.velocity = Vector2.zero;
 				_wanderDelay -= Time.deltaTime;
+				_abandonedTarget = false;
 			}
 		}
-	}
-
-    private bool SpotTarget()
-    {
-        if (!_spottedPlayer)
-		{
-			float distanceToPlayer = Vector2.Distance(transform.position, PlayerMovement.Position);
-			
-			if (distanceToPlayer <= aggroRange)
-			{
-				_spotTimer -= Time.deltaTime;
-
-				if (_spotTimer <= 0)
-					Alert();
-			}
-			else
-				_spotTimer = spotTimer;
-		}
-		
-		return _spottedPlayer;
 	}
 }

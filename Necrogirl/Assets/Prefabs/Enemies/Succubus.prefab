@@ -157,7 +157,7 @@ MonoBehaviour:
     m_Bits: 520
   healthBar: {fileID: 8023558463211511310}
   animator: {fileID: 4254393940804923158}
-  projectilePrefab: {fileID: 5079351696014869354, guid: ab653688f00ea8a469f037e988691b50, type: 3}
+  projectilePrefab: {fileID: 8810064967952404415, guid: ab653688f00ea8a469f037e988691b50, type: 3}
 --- !u!114 &8023558463211511310 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 972142624115167863, guid: 5ca1749e49554ee41817349ecf77e00d, type: 3}

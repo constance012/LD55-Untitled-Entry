@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,7 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 	[Header("Sequence Settings (Apply to the entire Sequence)"), Space]
 	[Header("On Game Starts"), Space]
 	[SerializeField] private bool disableOnStart;
+	[SerializeField] private bool dontSetStartValuesOnAwake;
 
 	[Header("Looping"), Space]
 	[SerializeField] private LoopType loopType;
@@ -48,6 +50,10 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 	[HideInInspector] public Graphic _graphic;
 	[HideInInspector] public CanvasGroup _canvasGroup;
 
+	// Private fields.
+	private static bool _dotweenInitialized = false;
+	private bool _setActiveInProgress;
+
 	private void OnValidate()
 	{
 		for (int i = 0; i < tweeners.Count; i++)
@@ -56,17 +62,32 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 				tweeners[i].ValidateDefaultValues(i);
 		}
 	}
+
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+	private static void ResetStatic()
+	{
+		_dotweenInitialized = false;
+	}
 	
 	private void Awake()
 	{
+		if (!_dotweenInitialized)
+		{
+			DOTween.Init(recycleAllByDefault: false, useSafeMode: true, logBehaviour: LogBehaviour.Verbose)
+				   .SetCapacity(200, 50);
+			_dotweenInitialized = true;
+		}
+
 		CheckForRequireComponents();
-		SetStartValues();
+
+		if (!dontSetStartValuesOnAwake)
+			SetStartValues();
 	}
 
-	private void OnEnable()
+	private async void OnEnable()
 	{
-		if (tweenOnEnable)
-			StartTweening(true);
+		if (tweenOnEnable && !_setActiveInProgress)
+			await StartTweening(true);
 	}
 
 	private void Start()
@@ -74,30 +95,34 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 		gameObjectToTween.SetActive(!disableOnStart);
 	}
 
-	public void OnPointerEnter(PointerEventData e)
+	public async void OnPointerEnter(PointerEventData e)
 	{
-		if (tweenOnMouseHover)
-			StartTweening(true);
+		if (tweenOnMouseHover && !_setActiveInProgress)
+			await StartTweening(true);
 	}
 
-	public void OnPointerExit(PointerEventData e)
+	public async void OnPointerExit(PointerEventData e)
 	{
-		if (tweenOnMouseHover)
-			StartTweening(false);
+		if (tweenOnMouseHover && !_setActiveInProgress)
+			await StartTweening(false);
 	}
 	
-	public void SetActive(bool active)
+	public async void SetActive(bool active)
 	{
+		_setActiveInProgress = true;
+
 		if (active)
 		{
 			gameObject.SetActive(true);
-			StartTweening(true);
+			await StartTweening(true);
 		}
 		else
-			StartTweening(false);
+			await StartTweening(false);
+
+		_setActiveInProgress = false;
 	}
 
-	private void StartTweening(bool forwards)
+	public async Task StartTweening(bool forwards)
 	{
 		if (_sequence.IsActive())
 			_sequence.Kill(true);
@@ -109,8 +134,9 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 			return;
 		else if (tweeners.Count == 1)
 		{
-			tweeners[0].CreateTween(forwards)
-					   .OnComplete(applyCallback ? (() => onCompleteCallback?.Invoke()) : null);
+			await tweeners[0].CreateTween(forwards)
+							 .OnComplete(applyCallback ? (() => onCompleteCallback?.Invoke()) : null)
+							 .AsyncWaitForCompletion();
 		}
 		else
 		{
@@ -138,7 +164,8 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 					 .PrependInterval(delay)
 					 .SetUpdate(updateType, ignoreTimeScale);
 		
-			_sequence.OnComplete(applyCallback ? (() => onCompleteCallback?.Invoke()) : null);
+			await _sequence.OnComplete(applyCallback ? (() => onCompleteCallback?.Invoke()) : null)
+						   .AsyncWaitForCompletion();
 		}
 	}
 
@@ -153,7 +180,7 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 		return new Vector3(color.r, color.g, color.b) * 255f;
 	}
 	
-	private void SetStartValues()
+	public void SetStartValues()
 	{
 		foreach (UITweener tweener in tweeners)
 		{
@@ -170,7 +197,12 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 					if (tweener.useCurrentValueAsStart)
 						tweener.startValue = _rectTransform.anchoredPosition;
 					else if (tweener.overrideStartValue)
-						_rectTransform.anchoredPosition = tweener.startValue;
+					{
+						if (tweener.tweenInRelativeSpace)
+							_rectTransform.DOAnchorPos(tweener.startValue, 0f).SetRelative(true);
+						else
+							_rectTransform.anchoredPosition = tweener.startValue;
+					}
 					break;
 				
 				case UITweeningType.Rotate:

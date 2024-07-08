@@ -26,6 +26,8 @@ MonoBehaviour:
       keyCode: 115
     - action: 6
       keyCode: 101
+    - action: 7
+      keyCode: 9
     - action: 8
       keyCode: 102
     - action: 9

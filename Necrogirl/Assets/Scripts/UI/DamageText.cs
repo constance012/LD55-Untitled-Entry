@@ -86,7 +86,7 @@ public class DamageText : MonoBehaviour
 	private void GraduallyMoveUp()
 	{
 		float vel = _criticalHit ? maxVelocity * 1.5f : maxVelocity;
-		transform.DOLocalMoveY(1f, vel).SetSpeedBased(true).SetEase(Ease.OutQuint).OnComplete(DestroyObject);
+		transform.DOLocalMoveY(1f, vel).SetSpeedBased(true).SetEase(Ease.OutQuint).OnStart(PrepareForDestroying);
 	}
 
 	private void PopUp(DamageTextStyle style)
@@ -97,14 +97,15 @@ public class DamageText : MonoBehaviour
 			transform.DOScale(.3f, .17f).SetLoops(-1, LoopType.Yoyo);
 	}
 
-	public void DestroyObject()
+	public void PrepareForDestroying()
 	{
 		Sequence sequence = DOTween.Sequence();
 
 		sequence.Append(canvasGroup.DOFade(0f, .15f))
 				.Join(transform.DOScale(0f, .2f))
 				.SetEase(Ease.OutCubic)
-				.AppendCallback(() => Destroy(transform.parent.gameObject));
+				.AppendCallback(() => Destroy(transform.parent.gameObject))
+				.PrependInterval(maxLifeTime);
 	}
 	#endregion
 }

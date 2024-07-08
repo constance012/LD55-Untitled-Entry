@@ -14,8 +14,8 @@ public class Stats : ScriptableObject
 	public SerializedDictionary<Stat, float> dynamicStats = new SerializedDictionary<Stat, float>();
 
 	// Private fields.
-	private readonly List<StatsUpgrade> appliedUpgrades = new List<StatsUpgrade>();
-	private readonly HashSet<Stat> toStringIgnoreStats = new HashSet<Stat>()
+	private readonly List<StatsUpgrade> _appliedUpgrades = new List<StatsUpgrade>();
+	private readonly HashSet<Stat> _toStringIgnoreStats = new HashSet<Stat>()
 	{
 		Stat.ManaCost,
 		Stat.LifeStealRatio,
@@ -27,18 +27,18 @@ public class Stats : ScriptableObject
 
 	public void AddUpgrade(StatsUpgrade upgrade)
 	{
-		if (!appliedUpgrades.Contains(upgrade))
-			appliedUpgrades.Add(upgrade);
+		if (!_appliedUpgrades.Contains(upgrade))
+			_appliedUpgrades.Add(upgrade);
 	}
 
 	public void RemoveUpgrade(StatsUpgrade upgrade)
 	{
-		appliedUpgrades.Remove(upgrade);
+		_appliedUpgrades.Remove(upgrade);
 	}
 
 	public void ClearUpgrades()
 	{
-		appliedUpgrades.Clear();
+		_appliedUpgrades.Clear();
 	}
 
 	public float GetStaticStat(Stat statName)
@@ -79,7 +79,7 @@ public class Stats : ScriptableObject
 
 	private float GetUpgradedValue(Stat stat, float baseValue)
 	{
-		foreach (StatsUpgrade upgrade in appliedUpgrades)
+		foreach (StatsUpgrade upgrade in _appliedUpgrades)
 		{
 			if (!upgrade.affectedStats.TryGetValue(stat, out float upgradeValue))
 				continue;
@@ -98,13 +98,13 @@ public class Stats : ScriptableObject
         string result = "";
 		foreach (KeyValuePair<Stat, float> stat in dynamicStats)
 		{
-			if (!toStringIgnoreStats.Contains(stat.Key))
+			if (!_toStringIgnoreStats.Contains(stat.Key))
 				result += $"{stat.Key.ToString().AddWhitespaceBeforeCapital()}: {stat.Value}\n";
 		}
 		result += "\n";
 		foreach (KeyValuePair<Stat, float> stat in staticStats)
 		{
-			if (!toStringIgnoreStats.Contains(stat.Key))
+			if (!_toStringIgnoreStats.Contains(stat.Key))
 				result += $"{stat.Key.ToString().AddWhitespaceBeforeCapital()}: {stat.Value}\n";
 		}
 		return result.TrimEnd('\r', '\n');

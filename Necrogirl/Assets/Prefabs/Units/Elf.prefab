@@ -161,7 +161,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   abandonTimer: 6
-  decreasementPerTarget: 0.1
+  decrementPerTarget: 0
   forceFollowPlayerLimit: 15
   retreatMinDistance: 4.5
 --- !u!114 &6424138380128727037
@@ -190,7 +190,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   healthBar: {fileID: 3839615681994225395}
-  projectilePrefab: {fileID: 5079351696014869354, guid: 677d03d7f861f31468e332a7e222847b, type: 3}
+  projectilePrefab: {fileID: 661103334929211100, guid: de82b55956097734c9dee9bf59ca3f4f, type: 3}
 --- !u!95 &6997130681893881835 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6426212008188437359, guid: 6f9b7f4ba3b68324887d2993e7aaf8d5, type: 3}

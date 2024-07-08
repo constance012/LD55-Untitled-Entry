@@ -99,7 +99,7 @@ public class ItemPickup : Interactable
 	{
 		if (!_pickedUp)
 		{
-			if (ItemsManager.Instance.AddItem(_currentItem, forced))
+			if (Inventory.Instance.AddItem(_currentItem, forced))
 			{
 				Debug.Log("You're picking up a(n) " + _currentItem.itemName);
 

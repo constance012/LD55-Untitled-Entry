@@ -66,7 +66,7 @@ public class GameManager : Singleton<GameManager>
 		summaryScreen.transform.Find("Panel/Game Over Text").gameObject.SetActive(true);
 		summaryScreen.transform.Find("Panel/Victory Text").gameObject.SetActive(false);
 
-		coinCollectedText.text = $"You've collected <color=#C39F4C>{ItemsManager.Instance.Coins}";
+		coinCollectedText.text = $"You've collected <color=#C39F4C>{Inventory.Instance.Coins}";
 	}
 
 	public void ShowVictoryScreen()
@@ -77,6 +77,6 @@ public class GameManager : Singleton<GameManager>
 		summaryScreen.transform.Find("Panel/Game Over Text").gameObject.SetActive(false);
 		summaryScreen.transform.Find("Panel/Victory Text").gameObject.SetActive(true);
 
-		coinCollectedText.text = $"You've collected <color=#C39F4C>{ItemsManager.Instance.Coins}";
+		coinCollectedText.text = $"You've collected <color=#C39F4C>{Inventory.Instance.Coins}";
 	}
 }

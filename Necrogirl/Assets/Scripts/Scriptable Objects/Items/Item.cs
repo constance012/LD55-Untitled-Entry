@@ -6,13 +6,6 @@ using CSTGames.Utility;
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
 {
-	[Serializable]
-	public struct Rarity
-	{
-		public string title;
-		public Color color;
-	}
-
 	[ContextMenu("Generate ID")]
 	private void GenerateID()
 	{
@@ -75,6 +68,14 @@ public class Item : ScriptableObject
 		this.slotIndex = saveData.slotIndex;
 		this.quantity = saveData.quantity;
 	}
+}
+
+[Serializable]
+public struct Rarity
+{
+	public string title;
+	public Sprite icon;
+	public Color color;
 }
 
 public enum ItemCategory

@@ -4,8 +4,9 @@ public abstract class UpgradeBase : ScriptableObject
 {
     [Header("Basic Info"), Space]
     public Sprite icon;
+	public Rarity rarity;
     public string upgradeName;
-    public string description;
+    [TextArea(5, 10)] public string description;
     public int goldCost;
 
 	// Properties.

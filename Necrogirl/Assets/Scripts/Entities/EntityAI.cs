@@ -69,18 +69,8 @@ public abstract class EntityAI : Seeker
 		else
 			_standingStillTimeout = standingStillTimeout;
 	}
-
-	protected void RequestNewPath(Vector3 toPos)
-	{
-		// Request a path if the target has moved a certain distance fron the last position.
-		if (Vector3.Distance(toPos, _targetPreviousPos) >= maxMovementDelta || _standingStillTimeout <= 0f)
-		{
-			PathRequester.Request(new PathRequestData(transform.position, toPos, this.gameObject, OnPathFound));
-			_targetPreviousPos = toPos;
-			_standingStillTimeout = standingStillTimeout;
-		}
-	}
 	
+	#region Target Management.
 	protected bool LocateTarget()
     {
 		float distanceToTarget = target != null ? Vector2.Distance(transform.position, target.position) :
@@ -154,6 +144,19 @@ public abstract class EntityAI : Seeker
 	
 	protected abstract void TryAbandonTarget(float distanceToTarget);
 	public abstract void TryAlertTarget(float distanceToTarget, bool forced = false);
+	#endregion
+
+	#region Path Management.
+	protected void RequestNewPath(Vector3 toPos)
+	{
+		// Request a path if the target has moved a certain distance fron the last position.
+		if (Vector3.Distance(toPos, _targetPreviousPos) >= maxMovementDelta || _standingStillTimeout <= 0f)
+		{
+			PathRequester.Request(new PathRequestData(transform.position, toPos, this.gameObject, OnPathFound));
+			_targetPreviousPos = toPos;
+			_standingStillTimeout = standingStillTimeout;
+		}
+	}
 
 	protected override IEnumerator ExecuteFoundPath(int previousIndex = -1)
 	{
@@ -204,7 +207,9 @@ public abstract class EntityAI : Seeker
 		_path = new Vector3[0];
 		rb2D.velocity = Vector2.zero;
 	}
+	#endregion
 
+	#region Movement Methods.
 	protected void CheckFlip()
 	{
 		float sign = target != null ? Mathf.Sign(target.position.x - rb2D.position.x) : Vector2.Dot(rb2D.velocity.normalized, Vector2.right);
@@ -245,6 +250,7 @@ public abstract class EntityAI : Seeker
 
 		return velocity;
 	}
+	#endregion
 
 	protected virtual void OnDrawGizmosSelected()
 	{

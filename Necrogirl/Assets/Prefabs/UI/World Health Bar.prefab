@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -143,7 +143,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8094552473394192477}
-  - component: {fileID: 2242251842823439502}
   - component: {fileID: 1032390811801296951}
   m_Layer: 9
   m_Name: Effect Slider
@@ -172,14 +171,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2242251842823439502
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1528487283044368145}
-  m_CullTransparentMesh: 1
 --- !u!114 &1032390811801296951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.6981132, g: 0.16794232, b: 0.16794232, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -369,7 +360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -495,7 +486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.8207547, g: 0.6847086, b: 0.127759, a: 0.27450982}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -520,6 +511,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5806115603184225689}
+  - component: {fileID: 1733321969757898081}
   - component: {fileID: 8555237595979738036}
   m_Layer: 9
   m_Name: World Health Bar
@@ -548,6 +540,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 80, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &1733321969757898081
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4970535686547242441}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!114 &8555237595979738036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,8 +608,8 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  fxDelay: 0.2
-  fxDuration: 0.4
+  fxDelay: 0.3
+  fxDuration: 1
   healthIncreaseColor: {r: 0.35509998, g: 0.53, b: 0.2915, a: 0.27058825}
   healthDecreaseColor: {r: 0.82, g: 0.68224007, b: 0.13120002, a: 0.27058825}
   worldPos: {fileID: 0}

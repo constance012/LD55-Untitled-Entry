@@ -8,7 +8,6 @@ public class GameManager : Singleton<GameManager>
 	[Header("UI References"), Space]
 	[SerializeField] private HealthBar playerHealthBar;
 	[SerializeField] private GameObject summaryScreen;
-	[SerializeField] private GameObject pauseMenu;
 	[SerializeField] private TextMeshProUGUI coinCollectedText;
 	[SerializeField] private TextMeshProUGUI enemyCountText;
 
@@ -34,9 +33,6 @@ public class GameManager : Singleton<GameManager>
 			ShowVictoryScreen();
 			return;
 		}
-
-		if (InputManager.Instance.GetKeyDown(KeybindingActions.Pause))
-			Pause();
 	}
 
 	private void LateUpdate()
@@ -44,14 +40,12 @@ public class GameManager : Singleton<GameManager>
 		enemyCountText.text = $"{enemyContainer.childCount} / {_maxEnemies}";
 	}
 
-	public void UpdateCurrentHealth(float currentHP)
+	public void UpdateHealthBar(float amount, bool initialize = false)
 	{
-		playerHealthBar.SetCurrentHealth(currentHP);
-	}
-
-	public void InitializeHealthBar(float initialHP)
-	{
-		playerHealthBar.SetMaxHealth(initialHP);
+		if (initialize)
+			playerHealthBar.SetMaxHealth(amount);
+		else
+			playerHealthBar.SetCurrentHealth(amount);
 	}
 
 	/// <summary>
@@ -62,12 +56,6 @@ public class GameManager : Singleton<GameManager>
 		GameFinished = false;
 
 		SceneManager.LoadSceneAsync("Scenes/Main Game");
-	}
-
-	public void Pause()
-	{
-		Time.timeScale = 0f;
-		pauseMenu.SetActive(true);
 	}
 
 	public void ShowGameOverScreen()

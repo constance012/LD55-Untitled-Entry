@@ -4,17 +4,14 @@ using static Interactable;
 
 public class InteractionPopupLabel : MonoBehaviour
 {
-	[Header("References")]
-	[Space]
+	[Header("References"), Space]
 	[SerializeField] private Animator animator;
 
-	[Space]
-	[SerializeField] private TextMeshProUGUI label;
+	[Space, SerializeField] private TextMeshProUGUI label;
 	[SerializeField] private TextMeshProUGUI keyboardCue;
 	[SerializeField] private Transform mouseCue;
 
-	[Space]
-	[SerializeField] private Transform worldCanvas;
+	[Space, SerializeField] private Transform worldCanvas;
 
 	private void Awake()
 	{
@@ -26,19 +23,14 @@ public class InteractionPopupLabel : MonoBehaviour
 		animator.SetTrigger("Restart");
 	}
 
-	public void SetObjectName(string name)
+	public void SetLabelName(string name)
 	{
 		label.text = name.Trim().ToUpper();
 	}
 
-	public void SetObjectName(string name, int quantity, Color textColor, bool isDuplicated = false)
+	public void SetLabelName(string name, int quantity, Color textColor, bool isDuplicated = false)
 	{
-		TextMeshProUGUI chosenLabel;
-
-		if (isDuplicated)
-			chosenLabel = Instantiate(label, label.transform.parent);
-		else
-			chosenLabel = label;
+		TextMeshProUGUI chosenLabel = isDuplicated ? Instantiate(label, label.transform.parent) : label;
 
 		chosenLabel.text = quantity > 1 ? $"{name.ToUpper()} x{quantity}" : name.ToUpper();
 		chosenLabel.color = textColor;
@@ -46,7 +38,7 @@ public class InteractionPopupLabel : MonoBehaviour
 
 	public void SetupLabel(Transform interactable, InputSource inputSource)
 	{
-		SetObjectName("");
+		SetLabelName("");
 
 		keyboardCue.text = InputManager.Instance.GetKeyForAction(KeybindingActions.Interact).ToString().ToUpper();
 

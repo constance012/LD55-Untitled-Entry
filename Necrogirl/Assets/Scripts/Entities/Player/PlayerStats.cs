@@ -8,6 +8,9 @@ public class PlayerStats : EntityStats
 
 	[Header("Projectile Prefab"), Space]
 	[SerializeField] private GameObject projectilePrefab;
+	
+	[Header("Tooltip Trigger"), Space]
+	[SerializeField] private TooltipTrigger trigger;
 
 	public static bool IsDeath { get; set; }
 	public float CurrentMana => _currentMana;
@@ -33,9 +36,10 @@ public class PlayerStats : EntityStats
 	{
 		base.Start();
 		_currentMana = stats.GetDynamicStat(Stat.MaxMana);
-
-		GameManager.Instance.InitializeHealthBar(stats.GetDynamicStat(Stat.MaxHealth));
-		SummonManager.Instance.InitializeManaBar(stats.GetDynamicStat(Stat.MaxMana));
+		
+		trigger.content = stats.ToString();
+		GameManager.Instance.UpdateHealthBar(stats.GetDynamicStat(Stat.MaxHealth), true);
+		SummonManager.Instance.UpdateManaBar(stats.GetDynamicStat(Stat.MaxMana), true);
 
 		_invincibilityTime = invincibilityTime;
 		IsDeath = false;
@@ -97,7 +101,7 @@ public class PlayerStats : EntityStats
 			base.TakeDamage(amount, weakpointHit, attackerPos, knockBackStrength);
 
 			CameraShaker.Instance.ShakeCamera(2.5f, .1f);
-			GameManager.Instance.UpdateCurrentHealth(_currentHealth);
+			GameManager.Instance.UpdateHealthBar(_currentHealth);
 
 			_invincibilityTime = invincibilityTime;
 		}
@@ -109,7 +113,7 @@ public class PlayerStats : EntityStats
 		{
 			base.Heal(amount);
 
-			GameManager.Instance.UpdateCurrentHealth(_currentHealth);
+			GameManager.Instance.UpdateHealthBar(_currentHealth);
 		}
 	}
 
@@ -120,7 +124,7 @@ public class PlayerStats : EntityStats
 			_currentMana = Mathf.Max(_currentMana - manaCost, 0f);
 
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, DamageText.ManaColor, DamageTextStyle.Normal, $"-{manaCost}");
-			SummonManager.Instance.UpdateCurrentMana(_currentMana);
+			SummonManager.Instance.UpdateManaBar(_currentMana);
 		}
 	}
 
@@ -131,7 +135,7 @@ public class PlayerStats : EntityStats
 			_currentMana = Mathf.Min(_currentMana + amount, stats.GetDynamicStat(Stat.MaxMana));
 
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, DamageText.ManaColor, DamageTextStyle.Normal, $"+{amount}");
-			SummonManager.Instance.UpdateCurrentMana(_currentMana);
+			SummonManager.Instance.UpdateManaBar(_currentMana);
 		}
 	}
 

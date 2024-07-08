@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -209,7 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -369,6 +369,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1028382324434823211}
   - component: {fileID: 2225345505215025484}
+  - component: {fileID: 8151072874614717317}
   m_Layer: 5
   m_Name: Settings Menu
   m_TagString: Untagged
@@ -410,10 +411,74 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: 362e8dc3a3dc4854ebebe0f835e7c79a, type: 2}
-  closeOnStart: 1
   _masterSlider: {fileID: 3905152427471776709}
   _musicSlider: {fileID: 2910072451924606996}
   _soundsSlider: {fileID: 8936747210828799133}
+--- !u!114 &8151072874614717317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369384859464559489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e6628ffb8b74da1437bfcd39f522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectToTween: {fileID: 0}
+  tweeners:
+  - name: Scale Up
+    tweenType: 0
+    endValue: {x: 1, y: 1, z: 1}
+    duration: 0.3
+    startValue: {x: 0, y: 0, z: 0}
+    useCurrentValueAsStart: 0
+    overrideStartValue: 1
+    rotateMode: 0
+    snapToInteger: 0
+    isSpeedBased: 0
+    loopType: 0
+    loopCount: 0
+    easeType: 15
+    delay: 0
+    overshoot: 1.70158
+    period: 0
+    updateType: 0
+    ignoreTimeScale: 1
+    tweenInRelativeSpace: 0
+    playAlongPreviousTweener: 0
+  disableOnStart: 1
+  loopType: 0
+  loopCount: 0
+  easeType: 1
+  delay: 0
+  overshoot: 1.70158
+  period: 0
+  updateType: 0
+  ignoreTimeScale: 1
+  tweenInRelativeSpace: 0
+  tweenOnEnable: 0
+  tweenOnMouseHover: 0
+  onCompleteCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1369384859464559489}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callbackPeriod: 1
+  _rectTransform: {fileID: 0}
+  _graphic: {fileID: 0}
+  _canvasGroup: {fileID: 0}
 --- !u!1 &1837074051496688387
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,6 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 298396203255492986}
   - component: {fileID: 8936747210828799133}
+  - component: {fileID: 1958303699451897570}
   m_Layer: 5
   m_Name: Sound Slider
   m_TagString: Untagged
@@ -518,6 +584,59 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1958303699451897570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837074051496688387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e6628ffb8b74da1437bfcd39f522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectToTween: {fileID: 7776394843458413849}
+  tweeners:
+  - name: Scale Up
+    tweenType: 0
+    endValue: {x: 1.2, y: 1.2, z: 1.2}
+    duration: 0.2
+    startValue: {x: 0, y: 0, z: 0}
+    useCurrentValueAsStart: 1
+    overrideStartValue: 0
+    rotateMode: 0
+    snapToInteger: 0
+    isSpeedBased: 0
+    loopType: 0
+    loopCount: 0
+    easeType: 9
+    delay: 0
+    overshoot: 1.70158
+    period: 0
+    updateType: 0
+    ignoreTimeScale: 1
+    tweenInRelativeSpace: 0
+    playAlongPreviousTweener: 0
+  disableOnStart: 0
+  loopType: 0
+  loopCount: 0
+  easeType: 1
+  delay: 0
+  overshoot: 1.70158
+  period: 0
+  updateType: 0
+  ignoreTimeScale: 1
+  tweenInRelativeSpace: 0
+  tweenOnEnable: 0
+  tweenOnMouseHover: 1
+  onCompleteCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackPeriod: 0
+  _rectTransform: {fileID: 0}
+  _graphic: {fileID: 0}
+  _canvasGroup: {fileID: 0}
 --- !u!1 &1848598908106476029
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,7 +696,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -603,6 +722,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1984536025713390016}
   - component: {fileID: 3905152427471776709}
+  - component: {fileID: 6260772569432651937}
   m_Layer: 5
   m_Name: Master Slider
   m_TagString: Untagged
@@ -697,6 +817,59 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6260772569432651937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348018987257648607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e6628ffb8b74da1437bfcd39f522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectToTween: {fileID: 2567799017409802529}
+  tweeners:
+  - name: Scale Up
+    tweenType: 0
+    endValue: {x: 1.2, y: 1.2, z: 1.2}
+    duration: 0.2
+    startValue: {x: 0, y: 0, z: 0}
+    useCurrentValueAsStart: 1
+    overrideStartValue: 0
+    rotateMode: 0
+    snapToInteger: 0
+    isSpeedBased: 0
+    loopType: 0
+    loopCount: 0
+    easeType: 9
+    delay: 0
+    overshoot: 1.70158
+    period: 0
+    updateType: 0
+    ignoreTimeScale: 1
+    tweenInRelativeSpace: 0
+    playAlongPreviousTweener: 0
+  disableOnStart: 0
+  loopType: 0
+  loopCount: 0
+  easeType: 1
+  delay: 0
+  overshoot: 1.70158
+  period: 0
+  updateType: 0
+  ignoreTimeScale: 1
+  tweenInRelativeSpace: 0
+  tweenOnEnable: 0
+  tweenOnMouseHover: 1
+  onCompleteCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackPeriod: 0
+  _rectTransform: {fileID: 0}
+  _graphic: {fileID: 0}
+  _canvasGroup: {fileID: 0}
 --- !u!1 &2567799017409802529
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +955,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1399724164765072799}
   - component: {fileID: 2910072451924606996}
+  - component: {fileID: 2179305223239437252}
   m_Layer: 5
   m_Name: Music Slider
   m_TagString: Untagged
@@ -876,6 +1050,59 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2179305223239437252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2866239741815843400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e6628ffb8b74da1437bfcd39f522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectToTween: {fileID: 9004966758328181900}
+  tweeners:
+  - name: Scale Up
+    tweenType: 0
+    endValue: {x: 1.2, y: 1.2, z: 1.2}
+    duration: 0.2
+    startValue: {x: 0, y: 0, z: 0}
+    useCurrentValueAsStart: 1
+    overrideStartValue: 0
+    rotateMode: 0
+    snapToInteger: 0
+    isSpeedBased: 0
+    loopType: 0
+    loopCount: 0
+    easeType: 9
+    delay: 0
+    overshoot: 1.70158
+    period: 0
+    updateType: 0
+    ignoreTimeScale: 1
+    tweenInRelativeSpace: 0
+    playAlongPreviousTweener: 0
+  disableOnStart: 0
+  loopType: 0
+  loopCount: 0
+  easeType: 1
+  delay: 0
+  overshoot: 1.70158
+  period: 0
+  updateType: 0
+  ignoreTimeScale: 1
+  tweenInRelativeSpace: 0
+  tweenOnEnable: 0
+  tweenOnMouseHover: 1
+  onCompleteCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackPeriod: 0
+  _rectTransform: {fileID: 0}
+  _graphic: {fileID: 0}
+  _canvasGroup: {fileID: 0}
 --- !u!1 &3214229998835032129
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,7 +1273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1152,6 +1379,7 @@ GameObject:
   - component: {fileID: 7932934878675192553}
   - component: {fileID: 1723585600903388761}
   - component: {fileID: 864719461278113839}
+  - component: {fileID: 784501958084975198}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -1169,7 +1397,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5754345697716242266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1260,8 +1488,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1369384859464559489}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+      - m_Target: {fileID: 8151072874614717317}
+        m_TargetAssemblyTypeName: TweenableUIElement, Assembly-CSharp
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -1272,6 +1500,59 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &784501958084975198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4711936666602335274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e6628ffb8b74da1437bfcd39f522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectToTween: {fileID: 0}
+  tweeners:
+  - name: Scale Up
+    tweenType: 0
+    endValue: {x: 1.2, y: 1.2, z: 1.2}
+    duration: 0.2
+    startValue: {x: 0, y: 0, z: 0}
+    useCurrentValueAsStart: 1
+    overrideStartValue: 0
+    rotateMode: 0
+    snapToInteger: 0
+    isSpeedBased: 0
+    loopType: 0
+    loopCount: 0
+    easeType: 9
+    delay: 0
+    overshoot: 1.70158
+    period: 0
+    updateType: 0
+    ignoreTimeScale: 1
+    tweenInRelativeSpace: 0
+    playAlongPreviousTweener: 0
+  disableOnStart: 0
+  loopType: 0
+  loopCount: 0
+  easeType: 1
+  delay: 0
+  overshoot: 1.70158
+  period: 0
+  updateType: 0
+  ignoreTimeScale: 1
+  tweenInRelativeSpace: 0
+  tweenOnEnable: 0
+  tweenOnMouseHover: 1
+  onCompleteCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackPeriod: 0
+  _rectTransform: {fileID: 0}
+  _graphic: {fileID: 0}
+  _canvasGroup: {fileID: 0}
 --- !u!1 &4978369293514511022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,7 +1873,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1948,7 +2229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2022,7 +2303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2098,7 +2379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2268,7 +2549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

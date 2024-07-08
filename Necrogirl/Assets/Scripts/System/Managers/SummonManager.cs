@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class SummonManager : Singleton<SummonManager>
 {
@@ -68,6 +69,7 @@ public class SummonManager : Singleton<SummonManager>
 		unitCountText.text = $"{container.childCount} / {maxUnit}";
 	}
 
+	// Summon units using hotkeys.
 	public void SummonUnit(int index)
 	{
 		float manaCost = EntityDatabase.Instance.unitStats[index].GetStaticStat(Stat.ManaCost);
@@ -83,6 +85,9 @@ public class SummonManager : Singleton<SummonManager>
 			unit.transform.SetParent(container);
 
 			player.ConsumeMana(manaCost);
+			
+			unitButtons[index].transform.DOScale(1.2f, .15f).SetLoops(2, LoopType.Yoyo);
+			unitButtons.ForEach(button => button.SetCooldownTime(cooldown));
 
 			_cooldown = cooldown;
 		}
@@ -93,7 +98,7 @@ public class SummonManager : Singleton<SummonManager>
 	{
 		int index = button.transform.GetSiblingIndex();
 
-		if (player.CurrentMana >= button.ManaCost)
+		if (player.CurrentMana >= button.ManaCost && _cooldown <= 0f)
 		{
 			int prefabIndex = index == 0 ? Random.Range(0, 2) : index + 1;
 			Vector2 pos = ChooseSummonPosition();
@@ -105,24 +110,20 @@ public class SummonManager : Singleton<SummonManager>
 
 			player.ConsumeMana(button.ManaCost);
 			
+			unitButtons.ForEach(button => button.SetCooldownTime(cooldown));
 			_cooldown = cooldown;
 		}
 	}
 
-	public void UpdateCurrentMana(float currentMana)
+	public void UpdateManaBar(float amount, bool initialize = false)
 	{
-		playerManaBar.SetCurrentHealth(currentMana);
+		if (initialize)
+			playerManaBar.SetMaxHealth(amount);
+		else
+			playerManaBar.SetCurrentHealth(amount);
 
 		if (!_maxUnitReached)
-			unitButtons.ForEach(button => button.ValidateManaPoint(currentMana));
-	}
-
-	public void InitializeManaBar(float initialMana)
-	{
-		playerManaBar.SetMaxHealth(initialMana);
-
-		if (!_maxUnitReached)
-			unitButtons.ForEach(button => button.ValidateManaPoint(initialMana));
+			unitButtons.ForEach(button => button.ValidateManaPoint(amount));
 	}
 
 	private Vector2 ChooseSummonPosition()

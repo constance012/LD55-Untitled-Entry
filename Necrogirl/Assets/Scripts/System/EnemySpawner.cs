@@ -28,7 +28,7 @@ public class EnemySpawner : MonoBehaviour
 
 			for (int i = 0; i < count; i++)
 			{
-				Vector2 pos = (Vector2)transform.position + Random.insideUnitCircle * range;
+				Vector2 pos = position + Random.insideUnitCircle * range;
 
 				List<EntityName> enemyNames = new List<EntityName>(enemiesToSpawn.Keys);
 				EntityName enemyName = enemyNames[Random.Range(0, enemyNames.Count)];
@@ -47,7 +47,7 @@ public class EnemySpawner : MonoBehaviour
 				int enemyCount = Random.Range(pair.Value.x, pair.Value.y + 1);
 				for (int i = 0; i < enemyCount; i++)
 				{
-					Vector2 pos = (Vector2)transform.position + Random.insideUnitCircle * range;
+					Vector2 pos = position + Random.insideUnitCircle * range;
 					EntityDatabase.Instance.TryGetEntity(pair.Key, out GameObject prefab);
 
 					GameObject enemy = Instantiate(prefab, pos, Quaternion.identity);

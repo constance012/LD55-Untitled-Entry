@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Specialized;
-using TMPro;
-using UnityEngine;
-using UnityEngine.Rendering.Universal;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
@@ -19,16 +17,16 @@ public class HealthBar : MonoBehaviour
 	[Header("Effect Settings"), Space]
 	[SerializeField] private float fxDelay;
 	[SerializeField] private float fxDuration;
-
-	
 	[Space, SerializeField] private Color healthIncreaseColor;
 	[SerializeField] private Color healthDecreaseColor;
 
+	// Properties.
+	public bool IsPreviousEffectActive => _fxTween.IsActive();
+
 	// Private fields.
-	private float _fxSmoothVel;
 	private Image _mainFillRect;
 	private Image _fxFillRect;
-	private Coroutine _fxCoroutine;
+	private Tween _fxTween;
 
 	protected virtual void Awake()
 	{
@@ -38,9 +36,6 @@ public class HealthBar : MonoBehaviour
 
 	public void SetCurrentHealth(float current)
 	{
-		if (_fxCoroutine != null)
-			StopCoroutine(_fxCoroutine);
-
 		// Health decreasing.
 		if (current <= mainSlider.value)
 		{
@@ -57,9 +52,12 @@ public class HealthBar : MonoBehaviour
 			fxSlider.value = current;
 		}
 
-		displayText.text = $"{current:0} / {mainSlider.maxValue}";
+		displayText.text = $"{current:0} / {mainSlider.maxValue:0}";
 
-		_fxCoroutine = StartCoroutine(PerformEffect());
+		if (IsPreviousEffectActive)
+			_fxTween.Kill();
+
+		_fxTween = PerformEffect();
 	}
 
 	public void SetMaxHealth(float max, bool initialize = true)
@@ -77,29 +75,21 @@ public class HealthBar : MonoBehaviour
 		}
 	}
 
-	private IEnumerator PerformEffect()
+	private Tween PerformEffect()
 	{
-		yield return new WaitForSeconds(fxDelay);
-
 		if (_fxFillRect.color == healthIncreaseColor)
 		{
-			while (fxSlider.value != mainSlider.value)
-			{
-				yield return null;
+			Sequence sequence = DOTween.Sequence();
+			
+			sequence.Append(mainSlider.DOValue(fxSlider.value, fxDuration).SetEase(Ease.OutCubic))
+					.Join(_mainFillRect.DOColor(healthGradient.Evaluate(mainSlider.normalizedValue), fxDuration))
+					.SetDelay(fxDelay);
 
-				mainSlider.value = Mathf.SmoothDamp(mainSlider.value, fxSlider.value, ref _fxSmoothVel, fxDuration);
-				_mainFillRect.color = healthGradient.Evaluate(mainSlider.normalizedValue);
-			}
+			return sequence;
 		}
-
 		else
 		{
-			while (fxSlider.value != mainSlider.value)
-			{
-				yield return null;
-
-				fxSlider.value = Mathf.SmoothDamp(fxSlider.value, mainSlider.value, ref _fxSmoothVel, fxDuration);
-			}
+			return fxSlider.DOValue(mainSlider.value, fxDuration).SetEase(Ease.OutCubic).SetDelay(fxDelay);
 		}
 	}
 }

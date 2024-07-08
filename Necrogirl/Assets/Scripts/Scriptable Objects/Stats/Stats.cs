@@ -47,7 +47,8 @@ public class Stats : ScriptableObject
 			return value;
 		else
 		{
-			Debug.LogWarning($"No STATIC stat value found for {statName} on {this.name}");
+			string statString = statName.ToString().AddWhitespaceBeforeCapital();
+			Debug.LogWarning($"No STATIC stat value found for \"{statString}\" on {this.name}");
 			return -1f;
 		}
 	}
@@ -58,7 +59,8 @@ public class Stats : ScriptableObject
 			return GetUpgradedValue(statName, baseValue);
 		else
 		{
-			Debug.LogWarning($"No DYNAMIC stat value found for {statName} on {this.name}");
+			string statString = statName.ToString().AddWhitespaceBeforeCapital();
+			Debug.LogWarning($"No DYNAMIC stat value found for \"{statString}\" on {this.name}");
 			return -1f;
 		}
 	}

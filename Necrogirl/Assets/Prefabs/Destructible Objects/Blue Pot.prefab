@@ -133,13 +133,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8ee14ca834ea634999fa42682474027, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listPotPieces:
+  brokenPieces:
   - {fileID: 4933290124064230993, guid: 02231ef1aa2b55745a62459c8872d9eb, type: 3}
   - {fileID: 476350095886718207, guid: 282799f21aa509d4386ca88273412ce1, type: 3}
   - {fileID: 1794167827544648569, guid: f326bdcef4532b146aec33be81389c66, type: 3}
   hpBottle: {fileID: 2963722369247630759, guid: 5db3010723476d44fa0dfd063d229802, type: 3}
   manaBottle: {fileID: 2963722369247630759, guid: 190e1ccdf6be99943a100cf6cf7d89ff, type: 3}
-  Coin: {fileID: 2963722369247630759, guid: d48499c2c92fb9a4dbff8677a8350a54, type: 3}
+  coin: {fileID: 2963722369247630759, guid: d48499c2c92fb9a4dbff8677a8350a54, type: 3}
   coinCount: {x: 10, y: 30}
   manaDropChance: 0.7
   healthDropChance: 0.3

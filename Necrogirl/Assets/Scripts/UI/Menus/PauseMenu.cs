@@ -1,13 +1,13 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PauseMenu : MonoBehaviour
 {
 	[Header("UI References"), Space]
 	[SerializeField] private TextMeshProUGUI dialoguesText;
-	[SerializeField] private SettingsMenu settings;
+	[SerializeField] private TweenableUIElement tweenable;
 
 	[Header("Animating Text Settings"), Space]
 	[SerializeField] private float textSpeed;
@@ -16,7 +16,10 @@ public class PauseMenu : MonoBehaviour
 	[SerializeField] private Vector2 pitchRange;
 	[SerializeField] private int typingSoundFrequency;
 
-	private string[] sentences = new string[]
+	// Private fields.
+	private bool _isPaused;
+
+	private readonly string[] sentences = new string[]
 	{
 		"Ah, settings! Where the magic happens. Or at least, where you can adjust the volume so your neighbors don't think you're running a rave in your basement.",
 		"Back into the fray you go, brave adventurer! Remember, every step you take, every battle you fight, brings you closer to your ultimate destiny. And hey, if you ever need a pep talk, I'm always here in the Settings menu.",
@@ -33,32 +36,31 @@ public class PauseMenu : MonoBehaviour
 		"The only way to get rid of a temptation is to yield to it."
 	};
 
-	private void OnEnable()
+	private void Update()
 	{
-		StartCoroutine(AnimateText());
+		if (InputManager.Instance.GetKeyDown(KeybindingActions.Pause))
+			TogglePausing(!_isPaused);
 	}
 
-	private void Start()
-	{
-		settings.ReloadUI();
-	}
-
-	/// <summary>
-	/// Callback method for the return to menu button.
-	/// </summary>
+	#region Callback Methods for UI.
 	public void ReturnToMenu()
 	{
-		Unpause();
+		TogglePausing(false);
 		SceneManager.LoadSceneAsync("Scenes/Menu");
 		AudioManager.Instance.Stop("Ambience Noise");
 	}
 
-	public void Unpause()
+	public void TogglePausing(bool pause)
 	{
-		Time.timeScale = 1f;
-		gameObject.SetActive(false);
+		_isPaused = pause;
+		Time.timeScale = _isPaused ? 0f : 1f;
+		
+		tweenable.SetActive(_isPaused);
+		StartCoroutine(AnimateText());
 	}
+	#endregion
 
+	#region Shopkeeper's Dialogue.
 	private void PlayTypingSound(int currentVisibleCharIndex)
 	{
 		if (!useTypingSound)
@@ -103,11 +105,15 @@ public class PauseMenu : MonoBehaviour
 		dialoguesText.text = sentence;
 		dialoguesText.maxVisibleCharacters = 0;
 
-		foreach (char ch in sentence)
+		foreach (char _ in sentence)
 		{
-			PlayTypingSound(dialoguesText.maxVisibleCharacters);
-			dialoguesText.maxVisibleCharacters++;
-			yield return new WaitForSecondsRealtime(delay);
+			if (_isPaused)
+			{
+				PlayTypingSound(dialoguesText.maxVisibleCharacters);
+				dialoguesText.maxVisibleCharacters++;
+				yield return new WaitForSecondsRealtime(delay);
+			}
 		}
 	}
+	#endregion
 }

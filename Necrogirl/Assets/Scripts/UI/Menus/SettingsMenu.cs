@@ -7,7 +7,6 @@ public class SettingsMenu : MonoBehaviour
 {
 	[Header("Audio Mixer"), Space]
 	[SerializeField] private AudioMixer mixer;
-	[SerializeField] private bool closeOnStart;
 
 	[Header("UI References"), Space]
 	[SerializeField] private Slider _masterSlider;
@@ -26,20 +25,15 @@ public class SettingsMenu : MonoBehaviour
 		_masterText = _masterSlider.GetComponentInChildren<TextMeshProUGUI>();
 	}
 
-	private void Start()
+	private void OnEnable()
 	{
-		if (closeOnStart)
-		{
-			ReloadUI();
-			gameObject.SetActive(false);
-		}
+		ReloadUI();
 	}
 
 	#region Callback Method for UI.
 	public void SetMasterVolume(float amount)
 	{
-		float volume = Mathf.Log10(amount) * 20f;
-		mixer.SetFloat("masterVol", volume);
+		mixer.SetFloat("masterVol", GetVolume(amount));
 
 		_masterText.text = $"Master: {ConvertDecibelToText(amount)}";
 		UserSettings.MasterVolume = amount;
@@ -47,8 +41,7 @@ public class SettingsMenu : MonoBehaviour
 
 	public void SetMusicVolume(float amount)
 	{
-		float volume = Mathf.Log10(amount) * 20f;
-		mixer.SetFloat("musicVol", volume);
+		mixer.SetFloat("musicVol", GetVolume(amount));
 
 		_musicText.text = $"Music: {ConvertDecibelToText(amount)}";
 		UserSettings.MusicVolume = amount;
@@ -56,8 +49,7 @@ public class SettingsMenu : MonoBehaviour
 
 	public void SetSoundsVolume(float amount)
 	{
-		float volume = Mathf.Log10(amount) * 20f;
-		mixer.SetFloat("soundsVol", volume);
+		mixer.SetFloat("soundsVol", GetVolume(amount));
 
 		_soundsText.text = $"Sound: {ConvertDecibelToText(amount)}";
 		UserSettings.SoundsVolume = amount;
@@ -76,10 +68,14 @@ public class SettingsMenu : MonoBehaviour
 	}
 	#endregion
 
+	#region Utility Functions.
 	private string ConvertDecibelToText(float amount)
 	{
 		return (amount * 100f).ToString("0");
 	}
+
+	private float GetVolume(float amount) => Mathf.Log10(amount) * 20f;
+	#endregion
 
 	public void ReloadUI()
 	{

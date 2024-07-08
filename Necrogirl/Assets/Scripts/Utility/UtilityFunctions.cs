@@ -10,21 +10,19 @@ namespace CSTGames.Utility
 	{
 		public static string AddWhitespaceBeforeCapital(this string str)
 		{
-			return String.Concat(str.Select(x => Char.IsUpper(x) ? " " + x : x.ToString()))
-									.TrimStart(' ');
+			return string.Concat(str.Select(x => char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
 		}
 
 		public static string AddHyphenBeforeNumber(this string str)
 		{
-			return String.Concat(str.Select(x => Char.IsDigit(x) ? "-" + x : x.ToString()))
-									.TrimStart('-');
+			return string.Concat(str.Select(x => char.IsDigit(x) ? "-" + x : x.ToString())).TrimStart('-');
 		}
 
 		public static string ClearWhitespaces(this string str)
 		{
 			return new string(str.ToCharArray()
-				.Where(c => !Char.IsWhiteSpace(c))
-				.ToArray());
+								 .Where(c => !char.IsWhiteSpace(c))
+								 .ToArray());
 		}
 	}
 

@@ -52,7 +52,7 @@ public class ItemPickup : Interactable
     {
         base.TriggerInteraction(playerDistance);
 
-		if (InputManager.Instance.GetKeyDown(KeybindingActions.Interact) && _delay > 0f)
+		if (LegacyInputManager.Instance.GetKeyDown(KeybindingActions.Interact) && _delay > 0f)
 			TryPickup(true);
     }
 
@@ -74,7 +74,7 @@ public class ItemPickup : Interactable
 	{
 		Transform foundLabel = _worldCanvas.transform.Find("Popup Label");
 
-		string itemName = _currentItem.itemName;
+		string itemName = _currentItem.displayName;
 		int quantity = _currentItem.quantity;
 		Color textColor = _currentItem.rarity.color;
 
@@ -101,11 +101,11 @@ public class ItemPickup : Interactable
 		{
 			if (Inventory.Instance.AddItem(_currentItem, forced))
 			{
-				Debug.Log("You're picking up a(n) " + _currentItem.itemName);
+				Debug.Log("You're picking up a(n) " + _currentItem.displayName);
 
 				if (!_currentItem.autoUse)
 				{
-					string content = $"{_currentItem.itemName} +{_currentItem.quantity}";
+					string content = $"{_currentItem.displayName} +{_currentItem.quantity}";
 					DamageText.Generate(damageTextPrefab, transform.position + Vector3.up, _currentItem.rarity.color, DamageTextStyle.Normal, content);
 				}
 				

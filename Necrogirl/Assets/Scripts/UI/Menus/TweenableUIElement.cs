@@ -193,6 +193,13 @@ public sealed class TweenableUIElement : MonoBehaviour, IPointerEnterHandler, IP
 						_rectTransform.localScale = tweener.startValue;
 					break;
 
+				case UITweeningType.SizeDelta:
+					if (tweener.useCurrentValueAsStart)
+						tweener.startValue = _rectTransform.sizeDelta;
+					else if (tweener.overrideStartValue)
+						_rectTransform.sizeDelta = tweener.startValue;
+					break;
+
 				case UITweeningType.Move:
 					if (tweener.useCurrentValueAsStart)
 						tweener.startValue = _rectTransform.anchoredPosition;

@@ -41,7 +41,7 @@ public sealed class ShopStockSlot : MonoBehaviour
 		{
 			currentUpgrade = upgrade;
 
-			displayNameText.text = currentUpgrade.upgradeName;
+			displayNameText.text = currentUpgrade.displayName;
 			displayNameText.color = currentUpgrade.rarity.color;
 			descriptionText.text = currentUpgrade.description;
 			
@@ -79,7 +79,7 @@ public sealed class ShopStockSlot : MonoBehaviour
 	{
 		if (coins >= currentUpgrade.goldCost)
 		{
-			Debug.Log($"You've purchased {currentUpgrade.upgradeName}.");
+			Debug.Log($"You've purchased {currentUpgrade.displayName}.");
 			Inventory.Instance.AddUpgrade(currentUpgrade);
 			LockSlot();
 
@@ -87,7 +87,7 @@ public sealed class ShopStockSlot : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log($"Insufficient coins to purchase {currentUpgrade.upgradeName}.");
+			Debug.Log($"Insufficient coins to purchase {currentUpgrade.displayName}.");
 			return false;
 		}
 	}

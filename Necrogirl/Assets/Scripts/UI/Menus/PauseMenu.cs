@@ -14,7 +14,7 @@ public class PauseMenu : MonoBehaviour
 
 	private void Update()
 	{
-		if (InputManager.Instance.GetKeyDown(KeybindingActions.Pause))
+		if (LegacyInputManager.Instance.GetKeyDown(KeybindingActions.Pause))
 			TogglePausing(!IsPaused);
 	}
 

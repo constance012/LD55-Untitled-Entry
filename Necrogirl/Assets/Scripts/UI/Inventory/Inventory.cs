@@ -33,17 +33,17 @@ public class Inventory : Singleton<Inventory>
 	protected override void Awake()
 	{
 		base.Awake();
-		FetchInterfaceComponents();
+		FetchInterfaceTypes();
 	}
 
     private void Update()
     {
 		if (SceneManager.GetActiveScene().buildIndex == 1 && !PauseMenu.IsPaused)
 		{
-			if (InputManager.Instance.GetKeyDown(KeybindingActions.Heal))
+			if (LegacyInputManager.Instance.GetKeyDown(KeybindingActions.Heal))
 				_healthPotionHUD.UseItem();
 			
-			if (InputManager.Instance.GetKeyDown(KeybindingActions.Inventory))
+			if (LegacyInputManager.Instance.GetKeyDown(KeybindingActions.Inventory))
 				ToggleActive(!_isActive);
 		}
     }
@@ -59,15 +59,15 @@ public class Inventory : Singleton<Inventory>
 	#region Slots' Startup Animation.
 	public void AnimateSlots(string tabName)
 	{
-		if (Enum.TryParse(tabName, out InventoryTabs tab))
+		if (Enum.TryParse(tabName, out InventorySection tab))
 		{
 			switch (tab)
 			{
-				case InventoryTabs.Upgrades:
+				case InventorySection.Upgrades:
 					_upgradePage.HandleSlotsAnimation();
 					break;
 				
-				case InventoryTabs.Items:
+				case InventorySection.Items:
 					_itemPage.HandleSlotsAnimation();
 					break;
 			}
@@ -76,7 +76,7 @@ public class Inventory : Singleton<Inventory>
 	#endregion
 
 
-	#region Items and Upgrades Management.
+	#region Items and Upgrades Management Methods.
 	/// <summary>
 	/// Add items to the HUD slots.
 	/// </summary>
@@ -88,7 +88,7 @@ public class Inventory : Singleton<Inventory>
 		if (item.autoUse)
 			return item.Use(isForcedPickup);
 
-		switch (item.itemName)
+		switch (item.displayName)
 		{
 			case "Health Potion":
 				AddItem(item);
@@ -101,7 +101,7 @@ public class Inventory : Singleton<Inventory>
 				return success;
 
 			default:
-				return false;
+				return AddItem(item);
 		}
 	}
 
@@ -109,9 +109,9 @@ public class Inventory : Singleton<Inventory>
 	/// Add items to inventory slots.
 	/// </summary>
 	/// <param name="item"></param>
-	public void AddItem(Item item)
+	public bool AddItem(Item item)
 	{
-		_itemPage.Add(item);
+		return _itemPage.Add(item);
 	}
 
 	public void RemoveItem(Item item)
@@ -130,15 +130,15 @@ public class Inventory : Singleton<Inventory>
 	}
 	#endregion
 
-	private void FetchInterfaceComponents()
+	private void FetchInterfaceTypes()
 	{
 		try
 		{
 			healthPotion.TryGetComponent(out _healthPotionHUD);
 			coins.TryGetComponent(out _coinsHUD);
 
-			_itemPage = new InventoryTabPage<IItemSlot, Item>(itemSlots, stackable: true);
-			_upgradePage = new InventoryTabPage<IUpgradeSlot, UpgradeBase>(upgradeSlots, stackable: false);
+			_itemPage = new InventoryTabPage<IItemSlot, Item>(itemSlots);
+			_upgradePage = new InventoryTabPage<IUpgradeSlot, UpgradeBase>(upgradeSlots);
 
 			coinsText.text = "0";
 		}
@@ -148,7 +148,7 @@ public class Inventory : Singleton<Inventory>
 		}
 	}
 
-	public enum InventoryTabs
+	public enum InventorySection
 	{
 		Upgrades,
 		Items

@@ -14,7 +14,7 @@ public class StatsUpgrade : UpgradeBase
 	{
 		if (!IsApplied)
 		{
-			Debug.Log($"Applying \"{this.upgradeName}\" upgrade...");
+			Debug.Log($"Applying \"{this.displayName}\" upgrade...");
 			unitsToApply.ForEach(unit => unit.AddUpgrade(this));
 			IsApplied = true;
 		}
@@ -24,7 +24,7 @@ public class StatsUpgrade : UpgradeBase
 	{
 		if (IsApplied)
 		{
-			Debug.Log($"Removing \"{this.upgradeName}\" upgrade...");
+			Debug.Log($"Removing \"{this.displayName}\" upgrade...");
 			unitsToApply.ForEach(unit => unit.RemoveUpgrade(this));
 			IsApplied = false;
 		}

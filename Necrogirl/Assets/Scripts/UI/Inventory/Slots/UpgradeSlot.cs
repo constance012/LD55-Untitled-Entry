@@ -1,13 +1,10 @@
 using System;
 
-public class UpgradeSlot : InventorySlotBase, IUpgradeSlot
+public class UpgradeSlot : StaticItemSlot<UpgradeBase>, IUpgradeSlot
 {
-	public UpgradeBase Current => _currentUpgrade;
-	public bool HasItem => _currentUpgrade != null;
-	public int Quantity => Convert.ToInt32(_currentUpgrade != null);
-
-	// Private fields.
-	private UpgradeBase _currentUpgrade;
+	public UpgradeBase Current => _current;
+	public bool HasItem => _current != null;
+	public int Quantity => Convert.ToInt32(_current != null);
 
 	protected override void Start()
 	{
@@ -21,18 +18,18 @@ public class UpgradeSlot : InventorySlotBase, IUpgradeSlot
 
 		if (!HasItem)
 		{
-			_currentUpgrade = upgrade;
+			_current = upgrade;
+			_current.DoUpgrade();
 
-			icon.sprite = _currentUpgrade.icon;
+			icon.sprite = _current.icon;
 			icon.gameObject.SetActive(true);
 
 			if (tooltipTrigger != null)
 			{
-				tooltipTrigger.header = _currentUpgrade.upgradeName;
-				tooltipTrigger.content = _currentUpgrade.description;
+				tooltipTrigger.header = _current.displayName;
+				tooltipTrigger.content = _current.description;
 			}
 
-			_currentUpgrade.DoUpgrade();
 			success = true;
 		}
 
@@ -44,8 +41,8 @@ public class UpgradeSlot : InventorySlotBase, IUpgradeSlot
 	{
 		if (HasItem)
 		{
-			_currentUpgrade.RemoveUpgrade();
-			_currentUpgrade = null;
+			_current.RemoveUpgrade();
+			_current = null;
 			
 			icon.gameObject.SetActive(false);
 
@@ -63,8 +60,8 @@ public class UpgradeSlot : InventorySlotBase, IUpgradeSlot
 	{
 		if (!HasItem)
 			return false;
-		else
-			return _currentUpgrade.upgradeName.Equals(upgrade.upgradeName);
+		
+		return _current.displayName.Equals(upgrade.displayName);
 	}
 
 	public override void UpdateQuantityText()

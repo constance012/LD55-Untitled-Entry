@@ -1,29 +1,27 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PickableItemSlot : InventorySlotBase, IItemSlot
+public class PickableItemSlot : StaticItemSlot<Item>, IItemSlot, IPointerClickHandler
 {
 	[Header("Slot Type"), Space]
 	[SerializeField] private bool isHUD;
 
-	public Item Current => _currentItem;
-	public bool HasItem => _currentItem != null;
+	public Item Current => _current;
+	public bool HasItem => _current != null;
 
 	public int Quantity
 	{
 		get
 		{
 			if (HasItem)
-				return _currentItem.quantity;
-			return 0;
+				return _current.quantity;
+			return -1;
 		}
 	}
 	
 	public int SlotIndex => transform.GetSiblingIndex();
-
-
-	// Private fields.
-	private Item _currentItem;
 
 	protected override void Start()
 	{
@@ -33,28 +31,45 @@ public class PickableItemSlot : InventorySlotBase, IItemSlot
 			icon.gameObject.SetActive(isHUD);
 	}
 
+	public void OnPointerClick(PointerEventData e)
+	{
+		ItemSwapHandler.Instance.Register(this);
+	}
+
+	#region Item Management Methods.
 	/// <summary>
-	/// Add the item into this slot if this slot is empty, otherwise update its quantity.
+	/// Add the item into this slot if this slot is empty, otherwise update its quantity if it's stackable.
 	/// </summary>
 	/// <param name="item"></param>
 	/// <returns></returns>
 	public bool Add(Item item)
 	{
-		bool success;
+		bool success = false;
 
 		if (!HasItem)
 		{
-			_currentItem = item;
-			_currentItem.id = Guid.NewGuid().ToString();
-			_currentItem.slotIndex = SlotIndex;
+			_current = item;
+			_current.id = Guid.NewGuid().ToString();
+			_current.slotIndex = SlotIndex;
 
-			icon.sprite = _currentItem.icon;
+			icon.sprite = _current.icon;
 			icon.gameObject.SetActive(true);
+
+			if (tooltipTrigger != null)
+			{
+				tooltipTrigger.header = _current.displayName;
+				tooltipTrigger.content = _current.description;
+			}
+
 			success = true;
 		}
-		else
+		else if (_current.stackable)
 		{
-			success = _currentItem.UpdateQuantity(item.quantity);
+			int redundance = _current.UpdateQuantity(item.quantity);
+			success = redundance <= 0;  // Success if there's no redundance.
+
+			if (redundance > 0)
+				item.quantity = redundance;
 		}
 
 		UpdateQuantityText();
@@ -65,7 +80,7 @@ public class PickableItemSlot : InventorySlotBase, IItemSlot
 	{
 		if (HasItem)
 		{
-			_currentItem = null;
+			_current = null;
 			
 			icon.gameObject.SetActive(false);
 
@@ -82,12 +97,12 @@ public class PickableItemSlot : InventorySlotBase, IItemSlot
 	// Callback method for the UI button.
 	public void UseItem()
 	{
-		if (HasItem && _currentItem.Use())
+		if (HasItem && _current.Use())
 		{
 			UpdateQuantityText();
 
-			if (_currentItem.quantity == 0)
-				Inventory.Instance.RemoveItem(_currentItem);
+			if (_current.quantity == 0)
+				Inventory.Instance.RemoveItem(_current);
 		}
 	}
 
@@ -95,12 +110,25 @@ public class PickableItemSlot : InventorySlotBase, IItemSlot
 	{
 		if (!HasItem)
 			return false;
-		else
-			return _currentItem.itemName.Equals(item.itemName);
+		
+		return _current.displayName.Equals(item.displayName) && !_current.FullyStacked;
+	}
+	#endregion
+
+	#region UI Control Methods.
+	public void SetIconAlpha(float alpha)
+	{
+		icon.DOFade(alpha, 0f);
 	}
 
 	public override void UpdateQuantityText()
 	{
-		quantityText.text = HasItem ? _currentItem.quantity.ToString() : isHUD ? "0" : "";
+		int quantity = Quantity;
+		
+		if (quantity == -1)
+			quantityText.text = isHUD ? "0" : "";
+		else
+			quantityText.text = quantity.ToString();
 	}
+	#endregion
 }

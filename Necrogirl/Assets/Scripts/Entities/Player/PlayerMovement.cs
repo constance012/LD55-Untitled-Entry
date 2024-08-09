@@ -21,8 +21,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Update()
 	{
-		_movementDirection.x = InputManager.Instance.GetAxisRaw("Horizontal");
-		_movementDirection.y = InputManager.Instance.GetAxisRaw("Vertical");
+		_movementDirection.x = LegacyInputManager.Instance.GetAxisRaw("Horizontal");
+		_movementDirection.y = LegacyInputManager.Instance.GetAxisRaw("Vertical");
 		_movementDirection.Normalize();
 
 		if (_movementDirection.sqrMagnitude > .01f)

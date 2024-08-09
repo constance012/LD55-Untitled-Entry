@@ -1,34 +1,13 @@
-using System;
 using UnityEngine;
 using CSTGames.DataPersistence;
 using CSTGames.Utility;
 
-[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
-public class Item : ScriptableObject
+[CreateAssetMenu(menuName = "Inventory/Base Item", fileName = "New Item")]
+public class Item : IdentifiableSO
 {
-	[ContextMenu("Generate ID")]
-	private void GenerateID()
-	{
-		id = Guid.NewGuid().ToString();
-	}
-
-	[ContextMenu("Clear ID")]
-	private void ClearID()
-	{
-		id = "";
-	}
-
-	[HideInInspector] public string id;
-	
-	[Header("General"), Space]
+	[Header("Category"), Space]
 	[ReadOnly] public int slotIndex = -1;
 	public ItemCategory category;
-
-	public string itemName;
-	[TextArea(5, 10)] public string description;
-
-	public Sprite icon;
-	public Rarity rarity;
 
 	[Header("Quantity and Stack"), Space]
 	public bool stackable;
@@ -39,16 +18,23 @@ public class Item : ScriptableObject
 	public bool canBeUsed;
 	public bool autoUse;
 
-	public bool UpdateQuantity(int delta)
+	public bool FullyStacked => quantity == maxPerStack;
+
+	/// <summary>
+	/// Update the quantity of this item, returns an indicator of redundance as a signed interger.
+	/// </summary>
+	/// <param name="delta"></param>
+	/// <returns> Negative if there's no redundance, 0 if enough to fill the stack, and positive if exceeds the stack.</returns>
+	public int UpdateQuantity(int delta)
 	{
 		int unclamp = quantity + delta;
 		quantity = Mathf.Clamp(unclamp, 0, maxPerStack);
-		return  unclamp <= maxPerStack;
+		return unclamp - maxPerStack;
 	}
 
 	public virtual bool Use(bool forced = false)
 	{
-		Debug.Log("Using " + itemName);
+		Debug.Log("Using " + displayName);
 		return canBeUsed;
 	}
 
@@ -62,7 +48,7 @@ public class Item : ScriptableObject
 	public virtual void InitializeSaveData(ItemSaveData saveData)
 	{
 		this.id = saveData.id;
-		this.itemName = saveData.itemName;
+		this.displayName = saveData.itemName;
 		this.category = saveData.category;
 
 		this.slotIndex = saveData.slotIndex;
@@ -70,20 +56,11 @@ public class Item : ScriptableObject
 	}
 }
 
-[Serializable]
-public struct Rarity
-{
-	public string title;
-	public Sprite icon;
-	public Color color;
-}
-
 public enum ItemCategory
 {
-	Null,
-	Consumable,
-	Material,
-	Coin,
-	Upgrade,
-	KeyItem
+	Null = 0,
+	Consumable = 2,
+	Material = 3,
+	Coin = 4,
+	KeyItem = 1
 }

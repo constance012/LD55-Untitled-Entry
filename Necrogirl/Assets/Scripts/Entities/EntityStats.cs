@@ -73,13 +73,8 @@ public abstract class EntityStats : MonoBehaviour, IComparable<EntityStats>
 	{
 		if (deathEffect != null)
 		{
-			GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-			effect.transform.localScale = transform.localScale;
-			
-			// Destroy effect here.
+			Instantiate(deathEffect, transform.position, Quaternion.identity);
 		}
-
-		Destroy(gameObject);
 	}
 
 	protected IEnumerator TriggerDamageFlash()

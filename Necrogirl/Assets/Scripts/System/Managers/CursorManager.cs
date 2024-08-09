@@ -28,7 +28,7 @@ public class CursorManager : Singleton<CursorManager>
 		if (Application.isEditor && !showInEditor)
 			return;
 
-		if (InputManager.Instance.GetKey(KeybindingActions.PrimaryAttack))
+		if (LegacyInputManager.Instance.GetKey(KeybindingActions.PrimaryAttack))
 			SwitchCursorTexture(CursorTextureType.Clicked);
 		else
 			SwitchCursorTexture(CursorTextureType.Default);

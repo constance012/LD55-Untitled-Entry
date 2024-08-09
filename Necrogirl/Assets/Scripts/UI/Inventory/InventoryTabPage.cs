@@ -4,15 +4,12 @@ using UnityEngine;
 
 public sealed class InventoryTabPage<TSlot, TItem>
 					where TSlot : IInventorySlot<TItem>
-					where TItem : ScriptableObject
+					where TItem : IdentifiableSO
 {
 	private List<TSlot> _slots;
-	private int _slotLastIndex = 0;
-	private bool _stackableItems;
 
-	public InventoryTabPage(List<GameObject> slotObjects, bool stackable)
+	public InventoryTabPage(List<GameObject> slotObjects)
 	{
-		_stackableItems = stackable;
 		_slots ??= new List<TSlot>();
 		
 		for (int i = 0; i < slotObjects.Count; i++)
@@ -26,7 +23,7 @@ public sealed class InventoryTabPage<TSlot, TItem>
 	public async void HandleSlotsAnimation()
 	{
 		Task[] tasks = new Task[_slots.Count];
-		List<InventorySlotBase> slots = _slots.ConvertAll(slot => slot as InventorySlotBase);
+		List<StaticItemSlot<TItem>> slots = _slots.ConvertAll(slot => slot as StaticItemSlot<TItem>);
 
 		slots.ForEach(slot => slot.PrepareEffect());
 
@@ -40,43 +37,79 @@ public sealed class InventoryTabPage<TSlot, TItem>
 	}
 	#endregion
 
-	#region Item Management.
+	#region Item Management Methods.
 	/// <summary>
 	/// Add items to inventory slots.
 	/// </summary>
 	/// <param name="item"></param>
-	public void Add(TItem item)
+	public bool Add(TItem item)
 	{
-		if (_stackableItems)
-		{
-			int storedIndex = _slots.FindIndex(0, _slotLastIndex + 1, slot => slot.Exists(item));
+		int emptySlotIndex = IndexOf();
 
-			if (storedIndex == -1)
-				_slots[_slotLastIndex++].Add(item);
-			else
-				_slots[storedIndex].Add(item);
+		// This item is stackable, check for any available stacks.
+		int storedIndex = IndexOf(item);
+
+		while (storedIndex != -1)
+		{
+			if (_slots[storedIndex].Add(item))
+				return true;
+			
+			storedIndex = IndexOf(item);
 		}
-		else
-			_slots[_slotLastIndex++].Add(item);
+		
+		// This item is either not stackable or all stacks are full, and the Inventory is not full yet, add it to the new slot.
+		if (emptySlotIndex != -1)
+		{
+			return _slots[emptySlotIndex].Add(item);
+		}
+
+		return false;
 	}
 
 	public void Remove(TItem item)
 	{
-		int index = _slots.FindIndex(0, _slotLastIndex + 1, slot => slot.Current == item);
+		int index = IndexOf(item.id);
 
-		// Sort the array down if the provided index is less than the currently tracked index.
 		if (index != -1)
-		{
-			if (index < _slotLastIndex - 1)
-			{
-				_slots[index].Remove();
+			_slots[index].Remove();
+	}
+	#endregion
 
-				for (int i = index; i < _slotLastIndex; i++)
-					_slots[i].Add(_slots[i + 1].Current);
-			}
+	#region Utilities Methods.
 
-			_slots[--_slotLastIndex].Remove();
-		}
+	/// <summary>
+	/// Returns an index of the first empty slot available.
+	/// </summary>
+	/// <returns></returns>
+	private int IndexOf()
+	{
+		return _slots.FindIndex(slot => !slot.HasItem);
+	}
+
+	/// <summary>
+	/// Returns an index of the first slot contains the provided ID, otherwise return the first empty slot.
+	/// </summary>
+	/// <param name="id"> The item's id to search. </param>
+	/// <returns></returns>
+	private int IndexOf(string id)
+	{
+		if (!string.IsNullOrEmpty(id))
+			return _slots.FindIndex(slot => slot.Current.id.Equals(id));
+		
+		return IndexOf();
+	}
+
+	/// <summary>
+	/// Returns an index of the first slot contains the provided item if it exists, otherwise return the first empty slot.
+	/// </summary>
+	/// <param name="item"> The item to search. </param>
+	/// <returns></returns>
+	private int IndexOf(TItem item = null)
+	{
+		if (item != null)
+			return _slots.FindIndex(slot => slot.Exists(item));
+
+		return IndexOf();
 	}
 	#endregion
 }

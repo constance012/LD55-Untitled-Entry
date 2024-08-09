@@ -63,9 +63,9 @@ public abstract class UnitStats : EntityStats
 
     public override void Die()
 	{
-		Destroy(healthBar.gameObject);
-
 		base.Die();
+		Destroy(healthBar.gameObject);
+		Destroy(gameObject);
 	}
 
 	private void OnDrawGizmosSelected()

@@ -71,6 +71,10 @@ public class UITweener
 				_tween = TweenableUI._rectTransform.DOScale(targetValue, duration);
 				break;
 
+			case UITweeningType.SizeDelta:
+				_tween = TweenableUI._rectTransform.DOSizeDelta(targetValue, duration, snapToInteger);
+				break;
+
 			case UITweeningType.Move:
 				_tween = TweenableUI._rectTransform.DOAnchorPos(targetValue, duration, snapToInteger);
 				break;
@@ -107,12 +111,13 @@ public class UITweener
 
 public enum UITweeningType
 {
-	Scale,
-	Move,
-	Rotate,
-	FadeCanvasGroup,
-	FadeGraphic,
-	Color
+	Scale = 0,
+	SizeDelta = 6,
+	Move = 1,
+	Rotate = 2,
+	FadeCanvasGroup = 3,
+	FadeGraphic = 4,
+	Color = 5
 }
 
 public enum TweenCallbackPeriod

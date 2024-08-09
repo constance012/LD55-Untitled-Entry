@@ -17,7 +17,7 @@ namespace CSTGames.DataPersistence
 		public ItemSaveData(Item itemToSave)
 		{
 			this.id = itemToSave.id;
-			this.itemName = itemToSave.itemName;
+			this.itemName = itemToSave.displayName;
 			this.category = itemToSave.category;
 
 			this.slotIndex = itemToSave.slotIndex;

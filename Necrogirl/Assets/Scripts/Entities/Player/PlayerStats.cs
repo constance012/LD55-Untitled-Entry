@@ -71,7 +71,7 @@ public class PlayerStats : EntityStats
 
     protected override IEnumerator DoAttack()
     {
-        if (InputManager.Instance.GetKeyDown(KeybindingActions.PrimaryAttack))
+        if (LegacyInputManager.Instance.GetKeyDown(KeybindingActions.PrimaryAttack))
 		{
 			rb2D.velocity = Vector2.zero;
 			
@@ -141,13 +141,9 @@ public class PlayerStats : EntityStats
 
 	public override void Die()
 	{
-		if (deathEffect != null)
-		{
-			IsDeath = true;
-
-			GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-			effect.transform.localScale = transform.localScale;
-		}
+		base.Die();
+		
+		IsDeath = true;
 
 		GameManager.Instance.ShowGameOverScreen();
 

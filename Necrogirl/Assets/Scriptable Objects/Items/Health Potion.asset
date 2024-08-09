@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: Health Potion
   m_EditorClassIdentifier: 
   id: 
-  slotIndex: -1
-  category: 1
-  itemName: Health Potion
-  description: 
+  displayName: Health Potion
+  description: Restore a small amount of health.
   icon: {fileID: 21300000, guid: c8d11bf3b4f3f0e42a8004a300366be2, type: 3}
   rarity:
     title: Uncommon
+    icon: {fileID: 0}
     color: {r: 0.8962264, g: 0.3786866, b: 0.36779106, a: 1}
-  stackable: 0
+  slotIndex: -1
+  category: 2
+  stackable: 1
   maxPerStack: 10
   quantity: 1
   canBeUsed: 1

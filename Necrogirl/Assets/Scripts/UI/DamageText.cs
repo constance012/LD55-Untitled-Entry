@@ -35,6 +35,7 @@ public class DamageText : MonoBehaviour
 
 	// Private fields.
 	private Color _currentTextColor;
+	private Sequence _idleSequence;
 	private bool _criticalHit;
 
 	#region Generate Method Overloads.
@@ -91,21 +92,40 @@ public class DamageText : MonoBehaviour
 
 	private void PopUp(DamageTextStyle style)
 	{
-		transform.DOScale(_styleScales[style], .25f).SetEase(Ease.OutBack);
+		Tween popUpTween = transform.DOScale(_styleScales[style], .25f).SetEase(Ease.OutBack);
 
 		if (_criticalHit)
-			transform.DOScale(.3f, .17f).SetLoops(-1, LoopType.Yoyo);
+		{
+			popUpTween.OnComplete(() => CriticalTextIdling());
+		}
 	}
 
-	public void PrepareForDestroying()
+	private void CriticalTextIdling()
+	{
+		_idleSequence = DOTween.Sequence();
+
+		_idleSequence.Append(transform.DOScale(.3f, .17f))
+					 .Append(transform.DOScale(_styleScales[DamageTextStyle.Critical], .17f))
+					 .SetLoops(-1, LoopType.Yoyo);
+	}
+
+	private void PrepareForDestroying()
 	{
 		Sequence sequence = DOTween.Sequence();
 
-		sequence.Append(canvasGroup.DOFade(0f, .15f))
+		sequence.AppendInterval(maxLifeTime)
+				.Append(canvasGroup.DOFade(0f, .15f))
 				.Join(transform.DOScale(0f, .2f))
 				.SetEase(Ease.OutCubic)
-				.AppendCallback(() => Destroy(transform.parent.gameObject))
-				.PrependInterval(maxLifeTime);
+				.AppendCallback(() => Destroying());
+	}
+
+	private void Destroying()
+	{
+		if (_idleSequence.IsActive())
+			_idleSequence.Kill();
+		
+		Destroy(transform.parent.gameObject);
 	}
 	#endregion
 }

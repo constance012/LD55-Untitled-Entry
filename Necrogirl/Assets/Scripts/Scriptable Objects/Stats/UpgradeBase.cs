@@ -1,12 +1,8 @@
 using UnityEngine;
 
-public abstract class UpgradeBase : ScriptableObject
+public abstract class UpgradeBase : IdentifiableSO
 {
-    [Header("Basic Info"), Space]
-    public Sprite icon;
-	public Rarity rarity;
-    public string upgradeName;
-    [TextArea(5, 10)] public string description;
+    [Header("Gold Cost"), Space]
     public int goldCost;
 
 	// Properties.

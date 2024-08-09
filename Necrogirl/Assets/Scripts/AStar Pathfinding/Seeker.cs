@@ -18,7 +18,7 @@ public abstract class Seeker : MonoBehaviour
 
 	private IEnumerator Start()
 	{
-		if (seekOnStart)
+		if (seekOnStart && target != null)
 		{
 			yield return new WaitForSeconds(.1f);
 			PathRequester.Request(new PathRequestData(transform.position, target.position, this.gameObject, OnPathFound));

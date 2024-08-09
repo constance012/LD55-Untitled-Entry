@@ -32,7 +32,7 @@ public class Consumable : Item
 			}
 		}
 		else
-			Debug.LogWarning($"This {itemName} can not be used or its quantity is 0!!");
+			Debug.LogWarning($"This {displayName} can not be used or its quantity is 0!!");
 
 		return false;
 	}

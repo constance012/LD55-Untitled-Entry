@@ -55,7 +55,7 @@ public class HealthBar : MonoBehaviour
 		displayText.text = $"{current:0} / {mainSlider.maxValue:0}";
 
 		if (IsPreviousEffectActive)
-			_fxTween.Kill();
+			_fxTween.Kill(true);
 
 		_fxTween = PerformEffect();
 	}
@@ -82,7 +82,7 @@ public class HealthBar : MonoBehaviour
 			Sequence sequence = DOTween.Sequence();
 			
 			sequence.Append(mainSlider.DOValue(fxSlider.value, fxDuration).SetEase(Ease.OutCubic))
-					.Join(_mainFillRect.DOColor(healthGradient.Evaluate(mainSlider.normalizedValue), fxDuration))
+					.Join(_mainFillRect.DOColor(healthGradient.Evaluate(fxSlider.normalizedValue), fxDuration))
 					.SetDelay(fxDelay);
 
 			return sequence;

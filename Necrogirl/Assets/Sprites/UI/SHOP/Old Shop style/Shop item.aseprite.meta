@@ -120,27 +120,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  animatedSpriteImportData:
-  - name: Shop item
-    originalName: 
-    pivot: {x: 0, y: 0}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 4
-      width: 0
-      height: 0
-    spriteID: 0e5d104d04993594b83201fedbfe60aa
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: -12, y: -12}
+  animatedSpriteImportData: []
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
@@ -149,15 +129,7 @@ ScriptedImporter:
     layerFlags: 0
     layerType: 0
     blendMode: 0
-    cells:
-    - name: Shop item
-      frameIndex: 0
-      cellRect:
-        x: 80
-        y: 80
-        width: 16
-        height: 16
-      spriteId: 0e5d104d04993594b83201fedbfe60aa
+    cells: []
     linkedCells: []
     parentIndex: -1
   platformSettings: []
